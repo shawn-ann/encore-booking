@@ -1,0 +1,11 @@
+<t-user-center-card userInfo="{{userInfo}}" isPhoneHide="{{true}}" name-class="custom-name-class" phone-class="custom-phone-class" avatar-class="customer-avatar-class" currAuthStep="{{currAuthStep}}" bind:gotoUserEditPage="gotoUserEditPage" />
+<view class="content-wrapper">
+  <view class="order-group-wrapper">
+    <view class="order-group">
+      <t-cell-group>
+        <t-cell t-class="order-group__top" t-class-left="order-group__left" t-class-title="order-group__top__title" t-class-note="order-group__top__note" title="我的订单" note="我的订单" bordered="{{false}}" arrow bind:tap="jumpAllOrder" />
+      </t-cell-group>
+    </view>
+  </view>
+</view>
+<t-toast id="t-toast" />

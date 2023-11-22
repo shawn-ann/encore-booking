@@ -1,0 +1,7 @@
+<view class="stock {{type}} wr-class">
+	<view class="symbol symbol-class">余座:</view>
+	<view class="pstock">
+		<view class="integer inline">{{stock}}</view>
+	</view>
+</view>
+
