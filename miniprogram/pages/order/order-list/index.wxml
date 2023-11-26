@@ -55,12 +55,7 @@
       />
       <view slot="more">
         <view class="price-total">
-          <text>总价</text>
-          <price fill price="{{order.totalAmount + ''}}" />
-          <text>，运费</text>
-          <price fill price="{{order.freightFee + ''}}" />
-          <text decode>&nbsp;</text>
-          <text class="bold-price" decode="{{true}}">实付&nbsp;</text>
+          <text class="bold-price" decode="{{true}}">总价&nbsp;</text>
           <price fill class="real-pay" price="{{order.amount + ''}}" decimalSmaller />
         </view>
         <!-- 订单按钮栏 -->

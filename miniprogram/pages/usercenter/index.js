@@ -39,15 +39,15 @@ Page({
       ({
         userInfo,
         countsData,
-        orderTagInfos: orderInfo,
+        // orderTagInfos: orderInfo,
         customerServiceInfo,
       }) => {
         // eslint-disable-next-line no-unused-expressions
 
-        const info = orderTagInfos.map((v, index) => ({
-          ...v,
-          ...orderInfo[index],
-        }));
+        // const info = orderTagInfos.map((v, index) => ({
+        //   ...v,
+        //   ...orderInfo[index],
+        // }));
         this.setData({
           userInfo,
           customerServiceInfo,

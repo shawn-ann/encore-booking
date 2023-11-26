@@ -137,7 +137,7 @@ Page({
       stock: goods.spuStockQuantity
     };
     let urlQueryStr = obj2Params({
-      goodsRequestList: JSON.stringify([query]),
+      goodsRequest: JSON.stringify(query),
     });
     urlQueryStr = urlQueryStr ? `?${urlQueryStr}` : '';
     const path = `/pages/order/order-confirm/index${urlQueryStr}`;

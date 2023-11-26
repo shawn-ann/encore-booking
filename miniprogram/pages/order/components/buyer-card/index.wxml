@@ -1,0 +1,62 @@
+<view class="buyer-card">
+    <view class="buyer-item">
+        <text>购票人</text>
+        <t-icon wr-class="buyer-item__right"
+                prefix="wr"
+                name="add"
+                id="ticket-buyer-add"
+                catchtap="addBuyer"
+                size="48rpx"
+                color="#FA550F"
+        />
+    </view>
+    <view class="buyer-info" wx:for="{{buyerList}}" wx:for-item="item" wx:key="index">
+        <view class="buyer-item">
+            <text>姓名</text>
+            <view wr-class="buyer-item__right">
+                <t-input data-index="{{index}}"
+                         slot="right-icon"
+                         borderless
+                         align="right"
+                         t-class="input-com"
+                         value="{{item.name}}"
+                         data-item="name"
+                         type=""
+                         placeholder="请输入姓名"
+                />
+            </view>
+        </view>
+        <view class="buyer-item">
+            <text>身份证号</text>
+            <view wr-class="buyer-item__right">
+                <t-input data-index="{{index}}"
+                         slot="right-icon"
+                         borderless
+                         align="right"
+                         t-class="input-com"
+                         value="{{item.idNumber}}"
+                         bindchange="handleIDNumberChange"
+                         data-item="name"
+                         type=""
+                         placeholder="请输入身份证号"
+                />
+            </view>
+        </view>
+        <view class="buyer-item">
+            <text>手机号</text>
+            <view wr-class="buyer-item__right">
+                <t-input data-index="{{index}}"
+                         slot="right-icon"
+                         borderless
+                         align="right"
+                         t-class="input-com"
+                         value="{{item.phoneNumber}}"
+                         bindchange="handlePhoneNumberInput"
+                         data-item="name"
+                         type=""
+                         placeholder="请输入手机号"
+                />
+            </view>
+        </view>
+    </view>
+</view>

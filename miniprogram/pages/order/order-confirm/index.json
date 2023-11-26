@@ -11,6 +11,6 @@
     "select-coupons": "../components/selectCoupons/selectCoupons",
     "no-goods": "../components/noGoods/noGoods",
     "t-image": "/components/webp-image/index",
-    "address-card": "./components/address-card/index"
+    "t-input": "tdesign-miniprogram/input/input"
   }
 }

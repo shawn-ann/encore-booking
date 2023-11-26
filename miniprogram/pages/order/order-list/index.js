@@ -43,27 +43,27 @@ Page({
   },
 
   onReachBottom() {
-    if (this.data.listLoading === 0) {
-      this.getOrderList(this.data.curTab);
-    }
+    // if (this.data.listLoading === 0) {
+    //   this.getOrderList(this.data.curTab);
+    // }
   },
 
   onPageScroll(e) {
-    this.pullDownRefresh && this.pullDownRefresh.onPageScroll(e);
+    // this.pullDownRefresh && this.pullDownRefresh.onPageScroll(e);
   },
 
   onPullDownRefresh_(e) {
-    const { callback } = e.detail;
-    this.setData({ pullDownRefreshing: true });
-    this.refreshList(this.data.curTab)
-      .then(() => {
-        this.setData({ pullDownRefreshing: false });
-        callback && callback();
-      })
-      .catch((err) => {
-        this.setData({ pullDownRefreshing: false });
-        Promise.reject(err);
-      });
+    // const { callback } = e.detail;
+    // this.setData({ pullDownRefreshing: true });
+    // this.refreshList(this.data.curTab)
+    //   .then(() => {
+    //     this.setData({ pullDownRefreshing: false });
+    //     callback && callback();
+    //   })
+    //   .catch((err) => {
+    //     this.setData({ pullDownRefreshing: false });
+    //     Promise.reject(err);
+    //   });
   },
 
   init(status) {
@@ -132,6 +132,7 @@ Page({
         });
       })
       .catch((err) => {
+        debugger;
         this.setData({ listLoading: 3 });
         return Promise.reject(err);
       });
