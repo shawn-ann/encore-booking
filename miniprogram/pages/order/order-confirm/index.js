@@ -32,10 +32,13 @@ Page({
         promotionGoodsList: [], //当前门店商品列表(优惠券)
         currentStoreId: null, //当前优惠券storeId
         buyerList: [
-            {name: "王XXX", phoneNumber: "123456789", idNumber: "110133199901017890"},
-            {name: "李XXX", phoneNumber: "", idNumber: ""},
+            {name: "王XXX", phoneNumber: "13664227822", idNumber: "110133199901017890"},
         ],
-        canPay: false
+        canPay: false,
+        dialogVisible: false,
+        smsCountDown: 0,
+        smsCode: "",
+        inputSmsCode: ""
     },
 
     payLock: false,
@@ -112,7 +115,35 @@ Page({
         }
         return false;
     },
+    sendSms() {
+        if (this.data.smsCountDown > 0) {
+            return;
+        }
+        // send sms
+        this.setData({smsCountDown: 60, smsCode: "1111"});
+        Toast({
+            context: this,
+            selector: '#t-toast',
+            message: '短信已发送',
+            duration: 2000,
+            icon: '',
+        });
+        let that = this;
+        // 开始倒计时
+        let timer = setInterval(function () {
+            let currentCountdown = that.data.smsCountDown;
 
+            if (currentCountdown > 0) {
+                // 倒计时减1秒
+                that.setData({
+                    smsCountDown: currentCountdown - 1
+                });
+            } else {
+                // 倒计时为0，清除定时器
+                clearInterval(timer);
+            }
+        }, 1000);
+    },
     handleError() {
         Toast({
             context: this,
@@ -262,20 +293,50 @@ Page({
             this.handleOptionsParams({goodsRequest});
         }
     },
-    // 提交订单
-    submitOrder() {
+
+    confirmOrder() {
         if (!this.buyerValidation()) {
             return;
         }
+        this.setData({
+            dialogVisible: true,
+            inputSmsCode: ""
+        });
+    },
 
+    confirmHandle() {
+        if (this.data.smsCode === "" || this.data.smsCode !== this.data.inputSmsCode) {
+            Toast({
+                context: this,
+                selector: '#t-toast',
+                message: '请输入正确的验证码',
+                duration: 2000,
+                icon: '',
+            });
+            return
+        }
+        this.setData({
+            dialogVisible: false
+        });
+        this.submitOrder();
+    },
+    cancelHandle() {
+        this.setData({
+            dialogVisible: false,
+            labelValue: '',
+        });
+    },
+    // 提交订单
+    submitOrder() {
         this.payLock = true;
         const {goods, buyerList} = this.data;
-        debugger;
+
         const params = {
             goods: goods,
             buyerList: buyerList
         };
-        wx.redirectTo({ url: `/pages/order/pay-result/index` });
+        wx.redirectTo({url: `/pages/order/pay-result/index`});
+
         commitPay(params).then(
             (res) => {
                 this.payLock = false;
@@ -353,7 +414,6 @@ Page({
             },
         );
     },
-
     // 处理支付
     handlePay(data, settleDetailData) {
         const {channel, payInfo, tradeNo, interactId, transactionId} = data;
@@ -443,6 +503,13 @@ Page({
 
         this.setData({
             buyerList: buyerList // 更新购买人信息列表
+        });
+    },
+    handleSmsCodeInput(event) {
+        let value = event.detail.value; // 获取输入框的值
+
+         this.setData({
+             inputSmsCode: value // 更新购买人信息列表
         });
     },
     handlePhoneNumberInput(event) {

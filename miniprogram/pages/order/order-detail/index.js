@@ -49,7 +49,7 @@ Page({
   // 页面初始化，会展示pageLoading
   init() {
     this.setData({ pageLoading: true });
-    this.getStoreDetail();
+    // this.getStoreDetail();
     this.getDetail()
       .then(() => {
         this.setData({ pageLoading: false });
@@ -85,51 +85,22 @@ Page({
       const _order = {
         id: order.orderId,
         orderNo: order.orderNo,
-        parentOrderNo: order.parentOrderNo,
-        storeId: order.storeId,
-        storeName: order.storeName,
         status: order.orderStatus,
         statusDesc: order.orderStatusName,
-        amount: order.paymentAmount,
-        totalAmount: order.goodsAmountApp,
-        logisticsNo: order.logisticsVO.logisticsNo,
-        goodsList: (order.orderItemVOs || []).map((goods) =>
-          Object.assign({}, goods, {
-            id: goods.id,
-            thumb: goods.goodsPictureUrl,
-            title: goods.goodsName,
-            skuId: goods.skuId,
-            spuId: goods.spuId,
-            specs: (goods.specifications || []).map((s) => s.specValue),
-            price: goods.tagPrice ? goods.tagPrice : goods.actualPrice, // 商品销售单价, 优先取限时活动价
-            num: goods.buyQuantity,
-            titlePrefixTags: goods.tagText ? [{ text: goods.tagText }] : [],
-            buttons: goods.buttonVOs || [],
-          }),
-        ),
+        totalAmount: order.totalAmount,
+        goods: order.goods,
+        buyerList: order.buyerList,
         buttons: order.buttonVOs || [],
         createTime: order.createTime,
-        receiverAddress: this.composeAddress(order),
-        groupInfoVo: order.groupInfoVo,
       };
       this.setData({
-        order,
-        _order,
+        order: _order,
         formatCreateTime: formatTime(
           parseFloat(`${order.createTime}`),
           'YYYY-MM-DD HH:mm',
         ), // 格式化订单创建时间
         countDownTime: this.computeCountDownTime(order),
-        addressEditable:
-          [OrderStatus.PENDING_PAYMENT, OrderStatus.PENDING_DELIVERY].includes(
-            order.orderStatus,
-          ) && order.orderSubStatus !== -1, // 订单正在取消审核时不允许修改地址（但是返回的状态码与待发货一致）
-        isPaid: !!order.paymentVO.paySuccessTime,
-        invoiceStatus: this.datermineInvoiceStatus(order),
-        invoiceDesc: order.invoiceDesc,
-        invoiceType:
-          order.invoiceVO?.invoiceType === 5 ? '电子普通发票' : '不开发票', //是否开票 0-不开 5-电子发票
-        logisticsNodes: this.flattenNodes(order.trajectoryVos || []),
+        isPaid: !!order.paymentVO.paySuccessTime
       });
     });
   },
@@ -194,7 +165,7 @@ Page({
     const { countDownTime, order } = this.data;
     if (
       countDownTime > 0 ||
-      (order && order.groupInfoVo && order.groupInfoVo.residueTime > 0)
+      (order && order.residueTime > 0)
     ) {
       this.onRefresh();
     }

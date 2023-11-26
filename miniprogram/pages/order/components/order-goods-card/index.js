@@ -15,6 +15,7 @@ Component({
 
   properties: {
     goods: Object,
+    goodsCount: Number,
     thumbWidth: Number,
     thumbHeight: Number,
     thumbWidthInPopup: Number,
@@ -25,7 +26,6 @@ Component({
   },
 
   data: {
-    goods: {},
     hidden: false,
   },
 

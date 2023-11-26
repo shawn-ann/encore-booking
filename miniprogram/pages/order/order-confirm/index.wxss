@@ -265,3 +265,10 @@
   text-overflow: ellipsis;
   overflow: hidden;
 }
+.send-sms{
+  flex:1;
+  padding: var(--td-input-vertical-padding, 32rpx);
+  text-align: right;
+  line-height: 48rpx;
+  font-size: var(--td-font-size-m, 32rpx);
+}

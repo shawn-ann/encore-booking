@@ -89,34 +89,18 @@ Page({
         let orderList = [];
         if (res && res.data && res.data.orders) {
           orderList = (res.data.orders || []).map((order) => {
+
             return {
               id: order.orderId,
               orderNo: order.orderNo,
-              parentOrderNo: order.parentOrderNo,
-              storeId: order.storeId,
-              storeName: order.storeName,
               status: order.orderStatus,
               statusDesc: order.orderStatusName,
-              amount: order.paymentAmount,
               totalAmount: order.totalAmount,
-              logisticsNo: order.logisticsVO.logisticsNo,
               createTime: order.createTime,
-              goodsList: (order.orderItemVOs || []).map((goods) => ({
-                id: goods.id,
-                thumb: cosThumb(goods.goodsPictureUrl, 70),
-                title: goods.goodsName,
-                skuId: goods.skuId,
-                spuId: goods.spuId,
-                specs: (goods.specifications || []).map(
-                  (spec) => spec.specValue,
-                ),
-                price: goods.tagPrice ? goods.tagPrice : goods.actualPrice,
-                num: goods.buyQuantity,
-                titlePrefixTags: goods.tagText ? [{ text: goods.tagText }] : [],
-              })),
+              goods: order.goods,
+              buyerList: order.buyerList,
               buttons: order.buttonVOs || [],
               groupInfoVo: order.groupInfoVo,
-              freightFee: order.freightFee,
             };
           });
         }

@@ -94,19 +94,37 @@
   <view class="wx-pay-cover">
     <view class="wx-pay">
       <price decimalSmaller fill class="price" price="{{totalPayAmount || '0'}}" />
-      <view class="submit-btn" bindtap="submitOrder">
+      <view class="submit-btn" bindtap="confirmOrder">
         提交订单
       </view>
     </view>
   </view>
-  <t-dialog t-class="add-notes" title="填写备注信息" visible="{{dialogShow}}" confirm-btn="确认" cancel-btn="取消" t-class-content="add-notes__content" t-class-confirm="dialog__button-confirm" t-class-cancel="dialog__button-cancel" bindconfirm="onNoteConfirm" bindcancel="onNoteCancel">
-    <t-textarea slot="content" focus="{{dialogShow}}" class="notes" t-class="add-notes__textarea" value="{{storeInfoList[storeNoteIndex] && storeInfoList[storeNoteIndex].remark}}" placeholder="备注信息" t-class-textarea="add-notes__textarea__font" bindfocus="onFocus" bindblur="onBlur" bindchange="onInput" maxlength="{{50}}" />
-  </t-dialog>
-  <t-popup visible="{{popupShow}}" placement="bottom" bind:visible-change="onPopupChange">
-    <no-goods slot="content" bind:change="onSureCommit" settleDetailData="{{settleDetailData}}" />
-  </t-popup>
+<!--  <t-dialog t-class="add-notes" title="填写备注信息" visible="{{dialogShow}}" confirm-btn="确认" cancel-btn="取消" t-class-content="add-notes__content" t-class-confirm="dialog__button-confirm" t-class-cancel="dialog__button-cancel" bindconfirm="onNoteConfirm" bindcancel="onNoteCancel">-->
+<!--    <t-textarea slot="content" focus="{{dialogShow}}" class="notes" t-class="add-notes__textarea" value="{{storeInfoList[storeNoteIndex] && storeInfoList[storeNoteIndex].remark}}" placeholder="备注信息" t-class-textarea="add-notes__textarea__font" bindfocus="onFocus" bindblur="onBlur" bindchange="onInput" maxlength="{{50}}" />-->
+<!--  </t-dialog>-->
+<!--  <t-popup placement="bottom" bind:visible-change="onPopupChange">-->
+<!--    <no-goods slot="content" bind:change="onSureCommit" settleDetailData="{{settleDetailData}}" />-->
+<!--  </t-popup>-->
   <select-coupons bind:sure="onCoupons" storeId="{{currentStoreId}}" orderSureCouponList="{{couponList}}" promotionGoodsList="{{promotionGoodsList}}" couponsShow="{{couponsShow}}" />
 </view>
 <t-toast id="t-toast" />
-<t-dialog id="t-dialog" />
+<t-dialog
+        visible="{{dialogVisible}}"
+        t-class-confirm="dialog__button-confirm"
+        t-class-cancel="dialog__button-cancel"
+        title="请确认购票人信息无误"
+        confirm-btn="确定"
+        cancel-btn="取消"
+        bind:confirm="confirmHandle"
+        bind:cancel="cancelHandle"
+>
+  <view slot="content" style="display:flex">
+    <view style="flex:1">
+      <t-input class="dialog__input" bindchange="handleSmsCodeInput" value="{{inputSmsCode}}" placeholder="短信验证码" borderless />
+    </view>
+    <view class="send-sms">
+      <view bind:tap="sendSms">发送 <label style="color:grey" wx:if="{{smsCountDown>0}}">({{smsCountDown}})</label></view>
+    </view>
+  </view>
+</t-dialog>
 </form>

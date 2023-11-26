@@ -36,7 +36,8 @@ Component({
         }
       },
     },
-    data: Object,
+    goods: Object,
+    goodsCount:{type: Number},
     layout: {
       type: String,
       value: 'horizontal',

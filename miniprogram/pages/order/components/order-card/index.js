@@ -46,8 +46,9 @@ Component({
     order: {
       type: Object,
       observer(order) {
-        if (!order?.goodsList) return;
-        const goodsCount = order.goodsList.length;
+        debugger;
+        if (!order?.buyerList) return;
+        const goodsCount = order.buyerList.length;
         this.setData({
           goodsCount,
         });
