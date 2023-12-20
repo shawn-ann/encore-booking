@@ -1,0 +1,32 @@
+
+spring:
+  thymeleaf:
+    encoding: UTF-8
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.101.10.94:3306/shawn_test?serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+    username: root
+    password: 123qw///
+    hikari:
+      connection-timeout: 3000
+
+  #  sql:
+#    init:
+#      encoding: utf8
+#      data-locations: classpath:data.sql
+#      mode: always
+#      continue-on-error: true
+  jpa:
+    show-sql: true # 默认false，在日志里显示执行的sql语句
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update #指定为update，每次启动项目检测表结构有变化的时候会新增字段，表不存在时会 新建，如果指定create，则每次启动项目都会清空数据并删除表，再新建
+      naming:
+        #指定jpa的自动表生成策略，驼峰自动映射为下划线格式7
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        #physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  main:
+    allow-circular-references: true
+server:
+  port: 9999
