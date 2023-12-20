@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/login/index",
     "pages/home/home",
     "pages/usercenter/index",
     "pages/usercenter/person-info/index",
@@ -40,10 +41,6 @@
       {
         "pagePath": "pages/home/home",
         "text": "首页"
-      },
-      {
-        "pagePath": "pages/goods/category/index",
-        "text": "分类"
       },
       {
         "pagePath": "pages/usercenter/index",

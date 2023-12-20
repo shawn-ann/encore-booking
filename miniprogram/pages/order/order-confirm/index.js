@@ -124,7 +124,7 @@ Page({
         Toast({
             context: this,
             selector: '#t-toast',
-            message: '短信已发送',
+            message: '短信已发送(1111)',
             duration: 2000,
             icon: '',
         });

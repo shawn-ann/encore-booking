@@ -54,7 +54,14 @@ Page({
   },
 
   init() {
+    // this.checkLogin();
     this.loadHomePage();
+  },
+  checkLogin() {
+    this.navToLogin();
+  },
+  navToLogin() {
+    wx.navigateTo({ url: '/pages/login/index' });
   },
 
   loadHomePage() {

@@ -48,9 +48,11 @@ Page({
         //   ...v,
         //   ...orderInfo[index],
         // }));
+
+        var storedUserInfo = wx.getStorageSync('userInfo');
+
         this.setData({
-          userInfo,
-          customerServiceInfo,
+          userInfo:storedUserInfo,
           currAuthStep: 2,
         });
         wx.stopPullDownRefresh();

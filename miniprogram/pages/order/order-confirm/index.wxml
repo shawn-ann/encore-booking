@@ -25,6 +25,7 @@
       />
     </view>
     <view class="buyer-info" wx:for="{{buyerList}}" wx:for-item="item" wx:key="index">
+<!--      <view class="divider-line" />-->
       <view class="buyer-item">
         <view class="buyer-item__right">
           <text>姓名</text>
