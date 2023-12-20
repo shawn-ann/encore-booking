@@ -20,6 +20,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .claim("id", user.getId())
                 .claim("name", user.getName())
+                .claim("roles", user.getRoles())
                 .claim("accountId", user.getAccountId())
                 .setIssuedAt(now)
                 .setExpiration(expiration)

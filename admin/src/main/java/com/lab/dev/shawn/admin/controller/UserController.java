@@ -33,9 +33,10 @@ public class UserController {
         Long userId = JwtUtil.getTokenClaims(token).get("id", Long.class);
         User user = userService.findById(userId);
 
-        ApiResponseBody body = new ApiResponseBody(Map.of("name", user.getName()));
+        ApiResponseBody body = new ApiResponseBody(Map.of("name", user.getName(), "roles", user.getRoles()));
         return ResponseEntity.ok(body);
     }
+
     record UserVO(String username, String password) {
 
     }
@@ -44,16 +45,13 @@ public class UserController {
     public ResponseEntity<ApiResponseBody> login(@RequestBody UserVO userVO, HttpServletRequest request) throws Exception {
         User user = userService.login(userVO.username, userVO.password);
         String token = JwtUtil.generateToken(user);
-        request.getSession().setAttribute(AuthInterceptor.TOKEN_KEY, token);
-
-        ApiResponseBody body = new ApiResponseBody(token);
+        ApiResponseBody body = new ApiResponseBody(Map.of("token", token));
         return ResponseEntity.ok(body);
 
     }
 
     @PostMapping("/logout")
     public ResponseEntity<ApiResponseBody> logout(HttpServletRequest request) throws Exception {
-        request.getSession().setAttribute(AuthInterceptor.TOKEN_KEY, null);
 
         ApiResponseBody body = new ApiResponseBody("Logout success!");
         return ResponseEntity.ok(body);
