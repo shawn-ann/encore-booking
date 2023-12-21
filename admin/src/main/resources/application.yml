@@ -8,14 +8,13 @@ spring:
     username: root
     password: 123qw///
     hikari:
-      connection-timeout: 3000
-
-  #  sql:
-#    init:
-#      encoding: utf8
-#      data-locations: classpath:data.sql
-#      mode: always
-#      continue-on-error: true
+      connection-timeout: 300000
+      connection-test-query: SELECT 1
+      idle-timeout: 3000
+      validation-timeout: 3000
+      minimum-idle: 10
+      maximum-pool-size: 40
+      max-lifetime: 600000
   jpa:
     show-sql: true # 默认false，在日志里显示执行的sql语句
     database: mysql

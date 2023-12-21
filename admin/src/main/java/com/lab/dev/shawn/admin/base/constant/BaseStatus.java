@@ -1,11 +1,9 @@
 package com.lab.dev.shawn.admin.base.constant;
 
-public enum BaseStatus {
-    ACTIVE("Active"),
-    INACTIVE("Inactive");
-    private String code;
+import lombok.Getter;
 
-    BaseStatus(String code) {
-        this.code = code;
-    }
+public enum BaseStatus {
+    ACTIVE,
+    INACTIVE;
+
 }

@@ -18,11 +18,19 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
 
         String token = request.getHeader("X-Token");
-        if (token == null || JwtUtil.getTokenClaims(token) == null) {
-            throw new BaseException(BaseExceptionEnum.UNAUTHORIZED);
-        }
+        isTokenValid(token);
 
         return true;
+    }
+
+    private static void isTokenValid(String token) throws BaseException {
+        try{
+            if (token == null || JwtUtil.getTokenClaims(token) == null) {
+                throw new BaseException(BaseExceptionEnum.UNAUTHORIZED);
+            }
+        }catch (Exception e){
+            throw new BaseException(BaseExceptionEnum.UNAUTHORIZED);
+        }
     }
 
     @Override

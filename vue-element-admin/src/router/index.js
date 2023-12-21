@@ -78,20 +78,39 @@ export const constantRoutes = [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        name: '首页',
+        meta: { title: '首页', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/agent',
+    component: Layout,
+    redirect: '/agent/list',
+    name: '代理商管理',
+    meta: {
+      title: '代理商管理',
+      icon: 'el-icon-s-help'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/agent/list'),
+        name: '代理商列表',
+        meta: { title: '代理商列表', icon: 'list' }
       }
     ]
   },
   {
     path: '/documentation',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',
         component: () => import('@/views/documentation/index'),
         name: 'Documentation',
-        meta: { title: 'Documentation', icon: 'documentation', affix: true }
+        meta: { title: 'Documentation', icon: 'documentation' }
       }
     ]
   },

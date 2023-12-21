@@ -4,6 +4,7 @@ import com.lab.dev.shawn.admin.base.constant.BaseStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Version;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -16,5 +17,6 @@ public class BaseEntity {
     private BaseStatus status;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
+    @Version
     private int version;
 }
