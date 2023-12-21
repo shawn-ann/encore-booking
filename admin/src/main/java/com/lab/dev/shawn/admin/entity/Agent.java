@@ -1,5 +1,6 @@
 package com.lab.dev.shawn.admin.entity;
 
+import com.lab.dev.shawn.admin.base.constant.BaseStatus;
 import com.lab.dev.shawn.admin.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -17,5 +18,6 @@ public class Agent extends BaseEntity {
     private String name;
     private String mobile;
 
-
+    @Enumerated(EnumType.STRING)
+    private BaseStatus status;
 }

@@ -4,7 +4,7 @@ spring:
     encoding: UTF-8
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.101.10.94:3306/shawn_test?serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+    url: jdbc:mysql://47.101.10.94:3306/encore_booking?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8
     username: root
     password: 123qw///
     hikari:

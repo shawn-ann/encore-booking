@@ -8,9 +8,8 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class AgentVO {
+public class ConcertResponseVO {
     private Long id;
-    private String mobile;
     private String name;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createDate;

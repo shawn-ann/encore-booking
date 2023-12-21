@@ -84,6 +84,24 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/concert',
+    component: Layout,
+    redirect: '/concert/list',
+    name: '演唱会管理',
+    meta: {
+      title: '演唱会管理',
+      icon: 'el-icon-s-help'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/concert/list'),
+        name: '演唱会列表',
+        meta: { title: '演唱会列表', icon: 'list' }
+      }
+    ]
+  },
+  {
     path: '/agent',
     component: Layout,
     redirect: '/agent/list',

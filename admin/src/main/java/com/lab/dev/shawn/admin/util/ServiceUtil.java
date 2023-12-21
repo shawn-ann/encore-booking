@@ -9,7 +9,7 @@ public class ServiceUtil {
     public static void handleCreate(BaseEntity entity) {
         LocalDateTime now = LocalDateTime.now();
         entity.setCreateDate(now);
-        entity.setStatus(BaseStatus.ACTIVE);
+        entity.setDeleted(false);
         entity.setUpdateDate(now);
         entity.setVersion(0);
     }

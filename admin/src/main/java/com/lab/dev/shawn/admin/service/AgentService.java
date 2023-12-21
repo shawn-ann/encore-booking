@@ -2,25 +2,19 @@ package com.lab.dev.shawn.admin.service;
 
 import com.lab.dev.shawn.admin.base.constant.BaseExceptionEnum;
 import com.lab.dev.shawn.admin.base.constant.BaseStatus;
-import com.lab.dev.shawn.admin.base.dto.PaginationEntity;
-import com.lab.dev.shawn.admin.base.entity.BaseEntity;
 import com.lab.dev.shawn.admin.base.exception.BaseException;
 import com.lab.dev.shawn.admin.entity.Agent;
-import com.lab.dev.shawn.admin.entity.User;
 import com.lab.dev.shawn.admin.repository.AgentRepository;
-import com.lab.dev.shawn.admin.repository.UserRepository;
 import com.lab.dev.shawn.admin.util.ServiceUtil;
-import com.lab.dev.shawn.admin.vo.AgentVO;
+import com.lab.dev.shawn.admin.vo.AgentRequestVO;
+import com.lab.dev.shawn.admin.vo.AgentResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AgentService {
@@ -37,29 +31,30 @@ public class AgentService {
         return agentRepository.findById(userId).stream().toList();
     }
 
-    public Page<AgentVO> findByMobile(int page, int limit, String mobile) {
+    public Page<AgentResponseVO> findByMobile(int page, int limit, String mobile, String name) {
         Pageable pageable = PageRequest.of(page - 1, limit);
-        return agentRepository.findByMobileContainingAndStatus_Active(mobile, pageable);
+        return agentRepository.findByMobileContainingAndStatus_Active(mobile, name, pageable);
     }
 
-    public void create(AgentVO agentVO) {
+    public void create(AgentRequestVO agentRequestVO) {
         Agent agent = new Agent();
-        agent.setName(agentVO.getName());
-        agent.setMobile(agentVO.getMobile());
+        agent.setName(agentRequestVO.getName());
+        agent.setMobile(agentRequestVO.getMobile());
+        agent.setStatus(BaseStatus.ACTIVE);
         ServiceUtil.handleCreate(agent);
         agentRepository.save(agent);
     }
 
-    public void update(AgentVO agentVO) throws BaseException {
-        Agent agent = agentRepository.findById(agentVO.getId()).get();
+    public void update(AgentRequestVO agentRequestVO) throws BaseException {
+        Agent agent = agentRepository.findById(agentRequestVO.getId()).get();
         if (agent == null) {
             throw new BaseException(BaseExceptionEnum.NOT_FOUND_MATCH_RECORD);
         }
         if (agent.getStatus().equals(BaseStatus.INACTIVE)) {
             throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
         }
-        agent.setMobile(agentVO.getMobile());
-        agent.setName(agentVO.getName());
+        agent.setMobile(agentRequestVO.getMobile());
+        agent.setName(agentRequestVO.getName());
         agentRepository.save(agent);
     }
 

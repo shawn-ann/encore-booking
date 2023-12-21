@@ -1,5 +1,6 @@
 package com.lab.dev.shawn.admin.entity;
 
+import com.lab.dev.shawn.admin.base.constant.BaseStatus;
 import com.lab.dev.shawn.admin.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,5 +29,6 @@ public class Ticket extends BaseEntity {
 
     private LocalDate date;
 
-
+    @Enumerated(EnumType.STRING)
+    private BaseStatus status;
 }

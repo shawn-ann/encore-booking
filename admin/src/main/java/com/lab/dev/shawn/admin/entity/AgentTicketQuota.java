@@ -25,5 +25,4 @@ public class AgentTicketQuota  extends BaseEntity {
     private int quantity;
 
 
-
 }

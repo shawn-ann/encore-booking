@@ -6,12 +6,7 @@
         placeholder="名称"
         style="width: 200px;"
         class="filter-item"
-      />
-      <el-input
-        v-model="listQuery.mobile"
-        placeholder="手机号"
-        style="width: 200px;"
-        class="filter-item"
+        @keyup.enter.native="handleFilter"
       />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
@@ -27,15 +22,10 @@
       </el-button>
     </div>
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+
       <el-table-column align="center" label="名称">
         <template slot-scope="scope">
           <span>{{ scope.row.name }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="手机号">
-        <template slot-scope="scope">
-          <span>{{ scope.row.mobile }}</span>
         </template>
       </el-table-column>
 
@@ -77,9 +67,6 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="手机号" prop="mobile">
-          <el-input v-model="temp.mobile" />
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -94,11 +81,11 @@
 </template>
 
 <script>
-import { fetchList, createItem, updateItem, deleteItem } from '@/api/agent'
+import { fetchList, createItem, updateItem, deleteItem } from '@/api/concert'
 import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'AgentList',
+  name: 'ConcertList',
   components: { Pagination },
   filters: {
     statusFilter(status) {
@@ -118,13 +105,11 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        mobile: '',
         name: ''
       },
       temp: {
         id: undefined,
-        name: undefined,
-        mobile: ''
+        name: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -154,7 +139,7 @@ export default {
       this.temp = {
         id: undefined,
         name: undefined,
-        mobile: undefined
+        mobile: ''
       }
     },
     handleCreate() {

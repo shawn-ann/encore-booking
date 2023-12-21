@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
-const prefix = '/agent/'
+const prefix = '/concert/'
+
 export function fetchList(query) {
   return request({
     url: prefix + 'list',
@@ -24,6 +25,7 @@ export function updateItem(data) {
     data
   })
 }
+
 export function deleteItem(id) {
   return request({
     url: prefix + id,
