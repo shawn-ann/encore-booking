@@ -56,6 +56,11 @@
           <span>{{ scope.row.ticketCategoryName }}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="代理商">
+        <template slot-scope="scope">
+          <span>{{ scope.row.agentName }}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="单价">
         <template slot-scope="scope">

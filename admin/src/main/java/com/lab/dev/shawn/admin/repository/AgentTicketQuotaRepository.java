@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface AgentTicketQuotaRepository extends JpaRepository<AgentTicketQuota, Long> {
 
     @Query("""
-            Select new com.lab.dev.shawn.admin.business.ticketQuota.vo.AgentTicketQuotaResponseVO(a.id,a.inventory.concert.name,a.inventory.session.name,a.inventory.ticketCategory.name,a.totalQuantity,a.remainingQuantity,a.price,a.status)
+            Select new com.lab.dev.shawn.admin.business.ticketQuota.vo.AgentTicketQuotaResponseVO(a.id,a.inventory.concert.name,a.inventory.session.name,a.inventory.ticketCategory.name,a.agent.name,a.totalQuantity,a.remainingQuantity,a.price,a.status)
             from AgentTicketQuota a 
             where a.deleted=false 
             and (:agentId is NULL or a.agent.id = :agentId) 

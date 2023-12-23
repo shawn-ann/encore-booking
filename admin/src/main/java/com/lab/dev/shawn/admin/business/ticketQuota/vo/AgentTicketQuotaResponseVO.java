@@ -15,6 +15,7 @@ public class AgentTicketQuotaResponseVO {
     private String concertName;
     private String sessionName;
     private String ticketCategoryName;
+    private String agentName;
     private int totalQuantity;
     private int remainingQuantity;
     private int price;
