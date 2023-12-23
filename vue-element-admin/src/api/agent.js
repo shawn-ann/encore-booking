@@ -30,3 +30,10 @@ export function deleteItem(id) {
     method: 'delete'
   })
 }
+
+export function fetchDropdown(id) {
+  return request({
+    url: prefix + 'dropdown',
+    method: 'get'
+  })
+}

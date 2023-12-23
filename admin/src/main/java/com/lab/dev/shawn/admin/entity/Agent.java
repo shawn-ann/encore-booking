@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name = "agent")
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class Agent extends BaseEntity {

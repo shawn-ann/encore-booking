@@ -35,10 +35,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="220">
+      <el-table-column align="center" label="操作" width="240">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">
             编辑
+          </el-button>
+          <el-button type="primary" size="mini">
+            <router-link :to="'/concert/ticket/list/'+scope.row.id">
+              门票管理
+            </router-link>
           </el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.row.id,$index)">
             删除
@@ -138,8 +143,7 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        name: undefined,
-        mobile: ''
+        name: undefined
       }
     },
     handleCreate() {
@@ -201,7 +205,6 @@ export default {
           type: 'success',
           duration: 2000
         })
-        this.list.splice(index, 1)
       })
     }
   }

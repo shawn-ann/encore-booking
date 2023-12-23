@@ -32,3 +32,11 @@ export function deleteItem(id) {
     method: 'delete'
   })
 }
+
+export function fetchDropdown() {
+  return request({
+    url: prefix + 'dropdown',
+    method: 'get'
+  })
+}
+

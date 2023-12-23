@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name = "concert")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class Concert extends BaseEntity {
