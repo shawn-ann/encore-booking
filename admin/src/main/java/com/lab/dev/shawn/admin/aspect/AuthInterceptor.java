@@ -5,7 +5,6 @@ import com.lab.dev.shawn.admin.base.exception.BaseException;
 import com.lab.dev.shawn.admin.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,10 +25,10 @@ public class AuthInterceptor implements HandlerInterceptor {
     private static void isTokenValid(String token) throws BaseException {
         try{
             if (token == null || JwtUtil.getTokenClaims(token) == null) {
-                throw new BaseException(BaseExceptionEnum.UNAUTHORIZED);
+                throw new BaseException(BaseExceptionEnum.NOT_LOGIN);
             }
         }catch (Exception e){
-            throw new BaseException(BaseExceptionEnum.UNAUTHORIZED);
+            throw new BaseException(BaseExceptionEnum.NOT_LOGIN);
         }
     }
 

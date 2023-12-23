@@ -71,6 +71,12 @@ public class AgentTicketQuotaService {
         if (inventory == null) {
             throw new BaseException(BaseExceptionEnum.UPDATE_FAILED);
         }
+
+        AgentTicketQuota existsRecord = agentRepository.findByAgentIdAndInventoryId(agent.getId(), requestVO.getInventoryId());
+        if (existsRecord != null) {
+            throw new BaseException(BaseExceptionEnum.DUPLICATED_RECORD);
+        }
+
         int rows = inventoryRepository.addUnallocatedQuantity(inventory.getId(), -requestVO.getQuantity());
         if (rows != 1) {
             throw new BaseException(BaseExceptionEnum.UNALLOCATED_QUANTITY_NOT_ENOUGTH);

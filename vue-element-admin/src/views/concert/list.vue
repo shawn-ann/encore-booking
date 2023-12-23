@@ -29,21 +29,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="创建日期">
-        <template slot-scope="scope">
-          <span>{{ scope.row.createDate }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column align="center" label="操作" width="240">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">
             编辑
-          </el-button>
-          <el-button type="primary" size="mini">
-            <router-link :to="'/concert/ticket/list/'+scope.row.id">
-              门票管理
-            </router-link>
           </el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.row.id,$index)">
             删除
