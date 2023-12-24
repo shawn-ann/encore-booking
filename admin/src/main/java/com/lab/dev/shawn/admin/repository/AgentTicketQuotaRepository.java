@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AgentTicketQuotaRepository extends JpaRepository<AgentTicketQuota, Long> {
 
@@ -44,4 +46,20 @@ public interface AgentTicketQuotaRepository extends JpaRepository<AgentTicketQuo
             AND t.remainingQuantity + :quantity >= 0
             """)
     int updateQuantity(Long id, int quantity);
+
+    @Query("""
+            Select a
+            from AgentTicketQuota a 
+            where a.deleted=false 
+            and  a.agent.id = :agentId
+            """)
+    List<AgentTicketQuota> findByAgentId(Long agentId);
+
+    @Query("""
+            Select a
+            from AgentTicketQuota a 
+            where a.deleted=false 
+            and  a.inventory.id = :inventoryId
+            """)
+    List<AgentTicketQuota> findByInventoryId(Long inventoryId);
 }

@@ -4,8 +4,8 @@ import com.lab.dev.shawn.admin.base.constant.BaseExceptionEnum;
 import com.lab.dev.shawn.admin.base.constant.BaseStatus;
 import com.lab.dev.shawn.admin.base.dto.DropdownOptions;
 import com.lab.dev.shawn.admin.base.exception.BaseException;
-import com.lab.dev.shawn.admin.entity.Concert;
-import com.lab.dev.shawn.admin.repository.ConcertRepository;
+import com.lab.dev.shawn.admin.entity.*;
+import com.lab.dev.shawn.admin.repository.*;
 import com.lab.dev.shawn.admin.business.concert.vo.ConcertRequestVO;
 import com.lab.dev.shawn.admin.business.concert.vo.ConcertResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,14 @@ public class ConcertService {
 
 
     private ConcertRepository concertRepository;
+    @Autowired
+    private SessionRepository sessionRepository;
+    @Autowired
+    private TicketCategoryRepository ticketCategoryRepository;
+    @Autowired
+    private InventoryRepository inventoryRepository;
+    @Autowired
+    private AgentTicketQuotaRepository agentTicketQuotaRepository;
 
     @Autowired
     public void setAgentRepository(ConcertRepository concertRepository) {
@@ -62,6 +70,16 @@ public class ConcertService {
         if (entity.getStatus().equals(BaseStatus.INACTIVE)) {
             throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
         }
+        List<Session> sessionList = sessionRepository.findByConcertId(id);
+        if (!sessionList.isEmpty()) {
+            throw new BaseException(50008, "请先删除场次再删除该记录");
+        }
+        List<TicketCategory> ticketCategoryList = ticketCategoryRepository.findByConcertId(id);
+
+        if (!ticketCategoryList.isEmpty()) {
+            throw new BaseException(50008, "请先删除票型再删除该记录");
+        }
+
         entity.setDeleted(true);
         concertRepository.save(entity);
     }

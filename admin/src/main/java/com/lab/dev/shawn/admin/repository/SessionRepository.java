@@ -3,6 +3,8 @@ package com.lab.dev.shawn.admin.repository;
 import com.lab.dev.shawn.admin.base.dto.DropdownOptions;
 import com.lab.dev.shawn.admin.business.session.vo.SessionResponseVO;
 import com.lab.dev.shawn.admin.business.ticketCategory.vo.TicketCategoryResponseVO;
+import com.lab.dev.shawn.admin.entity.AgentTicketQuota;
+import com.lab.dev.shawn.admin.entity.Inventory;
 import com.lab.dev.shawn.admin.entity.Session;
 import com.lab.dev.shawn.admin.entity.TicketCategory;
 import jakarta.persistence.LockModeType;
@@ -40,4 +42,12 @@ public interface SessionRepository extends CrudRepository<Session, Long> {
             order by a.id asc
             """)
     List<DropdownOptions> findDropdownOptions(Long concertId);
+
+    @Query("""
+            Select a
+            from Session a 
+            where a.deleted=false 
+            and  a.concert.id = :concertId
+            """)
+    List<Session> findByConcertId(Long concertId);
 }

@@ -30,6 +30,8 @@ public class SessionService {
     private SessionRepository sessionRepository;
     private ConcertRepository concertRepository;
     @Autowired
+    private InventoryRepository inventoryRepository;
+    @Autowired
     public void setSessionRepository(SessionRepository sessionRepository) {
         this.sessionRepository = sessionRepository;
     }
@@ -68,6 +70,9 @@ public class SessionService {
         Session entity = sessionRepository.findById(id).get();
         if (entity == null) {
             throw new BaseException(BaseExceptionEnum.NOT_FOUND_MATCH_RECORD);
+        }
+        if(!inventoryRepository.findBySessionId(id).isEmpty()){
+            throw new BaseException(50008, "请先删除库存再删除该记录");
         }
         entity.setDeleted(true);
         sessionRepository.save(entity);

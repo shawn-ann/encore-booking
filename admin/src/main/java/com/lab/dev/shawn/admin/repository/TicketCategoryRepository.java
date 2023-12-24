@@ -2,6 +2,7 @@ package com.lab.dev.shawn.admin.repository;
 
 import com.lab.dev.shawn.admin.base.constant.BaseStatus;
 import com.lab.dev.shawn.admin.base.dto.DropdownOptions;
+import com.lab.dev.shawn.admin.entity.AgentTicketQuota;
 import com.lab.dev.shawn.admin.entity.TicketCategory;
 import com.lab.dev.shawn.admin.business.ticketCategory.vo.TicketCategoryResponseVO;
 import jakarta.persistence.LockModeType;
@@ -41,4 +42,12 @@ public interface TicketCategoryRepository extends CrudRepository<TicketCategory,
             order by a.id asc
             """)
     List<DropdownOptions> findDropdownOptions(Long concertId);
+
+    @Query("""
+            Select a
+            from TicketCategory a 
+            where a.deleted=false 
+            and  a.concert.id = :concertId
+            """)
+    List<TicketCategory> findByConcertId(Long concertId);
 }

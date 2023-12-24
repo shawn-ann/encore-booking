@@ -11,10 +11,8 @@ import com.lab.dev.shawn.admin.entity.Concert;
 import com.lab.dev.shawn.admin.entity.Inventory;
 import com.lab.dev.shawn.admin.entity.Session;
 import com.lab.dev.shawn.admin.entity.TicketCategory;
-import com.lab.dev.shawn.admin.repository.ConcertRepository;
-import com.lab.dev.shawn.admin.repository.InventoryRepository;
-import com.lab.dev.shawn.admin.repository.SessionRepository;
-import com.lab.dev.shawn.admin.repository.TicketCategoryRepository;
+import com.lab.dev.shawn.admin.repository.*;
+import org.aspectj.weaver.loadtime.Agent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +31,8 @@ public class InventoryService {
     private SessionRepository sessionRepository;
     private TicketCategoryRepository ticketCategoryRepository;
     private InventoryRepository inventoryRepository;
+    @Autowired
+    private AgentTicketQuotaRepository agentTicketQuotaRepository;
 
     @Autowired
     public void setConcertRepository(ConcertRepository concertRepository) {
@@ -107,6 +107,9 @@ public class InventoryService {
         }
         if (entity.getStatus().equals(BaseStatus.ACTIVE)) {
             throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
+        }
+        if(!agentTicketQuotaRepository.findByInventoryId(id).isEmpty()){
+            throw new BaseException(50008, "请先删除配额再删除该记录");
         }
         entity.setDeleted(true);
         inventoryRepository.save(entity);

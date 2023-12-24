@@ -35,10 +35,12 @@ public class TicketCategoryService {
     public void setTicketRepository(TicketCategoryRepository ticketCategoryRepository) {
         this.ticketCategoryRepository = ticketCategoryRepository;
     }
+
     @Autowired
     public void setConcertRepository(ConcertRepository concertRepository) {
         this.concertRepository = concertRepository;
     }
+
     @Autowired
     public void setInventoryRepository(InventoryRepository inventoryRepository) {
         this.inventoryRepository = inventoryRepository;
@@ -73,6 +75,9 @@ public class TicketCategoryService {
         TicketCategory entity = ticketCategoryRepository.findById(id).get();
         if (entity == null) {
             throw new BaseException(BaseExceptionEnum.NOT_FOUND_MATCH_RECORD);
+        }
+        if (!inventoryRepository.findByTicketCategoryId(id).isEmpty()) {
+            throw new BaseException(50008, "请先删除库存再删除该记录");
         }
         entity.setDeleted(true);
         ticketCategoryRepository.save(entity);

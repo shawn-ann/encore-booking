@@ -3,6 +3,7 @@ package com.lab.dev.shawn.admin.repository;
 import com.lab.dev.shawn.admin.base.constant.BaseStatus;
 import com.lab.dev.shawn.admin.base.dto.DropdownOptions;
 import com.lab.dev.shawn.admin.business.inventory.vo.InventoryResponseVO;
+import com.lab.dev.shawn.admin.entity.AgentTicketQuota;
 import com.lab.dev.shawn.admin.entity.Inventory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -93,4 +94,20 @@ public interface InventoryRepository extends CrudRepository<Inventory, Long> {
             AND t.remainingQuantity + :quantity >= 0
             """)
     int addRemainingQuantity(Long id, int quantity);
+
+    @Query("""
+            Select a
+            from Inventory a 
+            where a.deleted=false 
+            and  a.session.id = :sessionId
+            """)
+    List<Inventory> findBySessionId(Long sessionId);
+
+    @Query("""
+            Select a
+            from Inventory a 
+            where a.deleted=false 
+            and  a.ticketCategory.id = :ticketCategoryId
+            """)
+    List<Inventory> findByTicketCategoryId(Long ticketCategoryId);
 }

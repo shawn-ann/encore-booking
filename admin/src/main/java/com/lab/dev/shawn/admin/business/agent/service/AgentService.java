@@ -8,6 +8,7 @@ import com.lab.dev.shawn.admin.entity.Agent;
 import com.lab.dev.shawn.admin.repository.AgentRepository;
 import com.lab.dev.shawn.admin.business.agent.vo.AgentRequestVO;
 import com.lab.dev.shawn.admin.business.agent.vo.AgentResponseVO;
+import com.lab.dev.shawn.admin.repository.AgentTicketQuotaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,8 +23,9 @@ import java.util.List;
 @Transactional
 public class AgentService {
 
-
     private AgentRepository agentRepository;
+    @Autowired
+    private AgentTicketQuotaRepository agentTicketQuotaRepository;
 
     @Autowired
     public void setAgentRepository(AgentRepository agentRepository) {
@@ -63,6 +65,9 @@ public class AgentService {
         }
         if (agent.getStatus().equals(BaseStatus.INACTIVE)) {
             throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
+        }
+        if (!agentTicketQuotaRepository.findByAgentId(id).isEmpty()) {
+            throw new BaseException(50008, "请先删除配额再删除该记录");
         }
         agent.setDeleted(true);
         agentRepository.save(agent);
