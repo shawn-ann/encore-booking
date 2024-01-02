@@ -3,8 +3,8 @@ package com.lab.dev.shawn.admin.business.ticketCategory.controller;
 import com.lab.dev.shawn.admin.base.dto.ApiResponseBody;
 import com.lab.dev.shawn.admin.base.dto.DropdownOptions;
 import com.lab.dev.shawn.admin.base.exception.BaseException;
+import com.lab.dev.shawn.admin.business.concert.vo.ConcertRequestVO;
 import com.lab.dev.shawn.admin.business.ticketCategory.service.TicketCategoryService;
-import com.lab.dev.shawn.admin.business.ticketCategory.vo.TicketCategoryRequestVO;
 import com.lab.dev.shawn.admin.business.ticketCategory.vo.TicketCategoryResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,14 +32,14 @@ public class TicketCategoryController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponseBody> create(@RequestBody TicketCategoryRequestVO requestVO) {
+    public ResponseEntity<ApiResponseBody> create(@RequestBody ConcertRequestVO.TicketCategoryRequestVO requestVO) {
         ticketCategoryService.create(requestVO);
         ApiResponseBody body = new ApiResponseBody("success");
         return ResponseEntity.ok(body);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<ApiResponseBody> update(@RequestBody TicketCategoryRequestVO requestVO) throws BaseException {
+    public ResponseEntity<ApiResponseBody> update(@RequestBody ConcertRequestVO.TicketCategoryRequestVO requestVO) throws BaseException {
         ticketCategoryService.update(requestVO);
         ApiResponseBody body = new ApiResponseBody("success");
         return ResponseEntity.ok(body);

@@ -4,7 +4,7 @@ import com.lab.dev.shawn.admin.base.dto.ApiResponseBody;
 import com.lab.dev.shawn.admin.base.dto.DropdownOptions;
 import com.lab.dev.shawn.admin.base.exception.BaseException;
 import com.lab.dev.shawn.admin.business.session.service.SessionService;
-import com.lab.dev.shawn.admin.business.session.vo.SessionRequestVO;
+import com.lab.dev.shawn.admin.business.concert.vo.SessionRequestVO;
 import com.lab.dev.shawn.admin.business.session.vo.SessionResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

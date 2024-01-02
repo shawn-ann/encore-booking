@@ -99,15 +99,23 @@ public interface InventoryRepository extends CrudRepository<Inventory, Long> {
             Select a
             from Inventory a 
             where a.deleted=false 
-            and  a.session.id = :sessionId
+            and  a.session.id IN :sessionIds
             """)
-    List<Inventory> findBySessionId(Long sessionId);
+    List<Inventory> findBySessionIds(List<Long> sessionIds);
 
     @Query("""
             Select a
             from Inventory a 
             where a.deleted=false 
-            and  a.ticketCategory.id = :ticketCategoryId
+            and  a.ticketCategory.id IN :ticketCategoryIds
             """)
-    List<Inventory> findByTicketCategoryId(Long ticketCategoryId);
+    List<Inventory> findByTicketCategoryIds(List<Long> ticketCategoryIds);
+
+    @Query("""
+            Select a
+            from Inventory a 
+            where a.deleted=false 
+            and  a.concert.id = :concertId
+            """)
+    List<Inventory> findByConcertId(Long concertId);
 }

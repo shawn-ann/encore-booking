@@ -21,6 +21,7 @@ public class User extends BaseEntity {
     private String accountId;
     private String password;
     private String name;
+
     @ElementCollection
     @Fetch(FetchMode.JOIN)
     private List<String> roles;

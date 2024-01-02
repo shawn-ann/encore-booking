@@ -22,7 +22,7 @@ public interface SessionRepository extends CrudRepository<Session, Long> {
 
     @Query(value = """
             SELECT 
-            new com.lab.dev.shawn.admin.business.session.vo.SessionResponseVO(a.id,a.concert.id AS concertId,a.concert.name AS concertName,a.name,a.status) 
+            new com.lab.dev.shawn.admin.business.session.vo.SessionResponseVO(a.id,a.name) 
             FROM Session a
             WHERE a.deleted=false 
             and (:concertId is null or a.concert.id = :concertId)
@@ -37,7 +37,6 @@ public interface SessionRepository extends CrudRepository<Session, Long> {
             select new com.lab.dev.shawn.admin.base.dto.DropdownOptions(a.id,a.name) 
             from Session a 
             where a.deleted=false 
-            and a.status=com.lab.dev.shawn.admin.base.constant.BaseStatus.ACTIVE
             and a.concert.id = :concertId
             order by a.id asc
             """)

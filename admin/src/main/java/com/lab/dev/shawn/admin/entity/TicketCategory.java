@@ -1,5 +1,6 @@
 package com.lab.dev.shawn.admin.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lab.dev.shawn.admin.base.constant.BaseStatus;
 import com.lab.dev.shawn.admin.base.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -16,10 +17,9 @@ public class TicketCategory extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "concert_id")
+    @JsonIgnore
     private Concert concert;
 
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    private BaseStatus status;
 }

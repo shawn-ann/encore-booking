@@ -6,6 +6,7 @@ import com.lab.dev.shawn.admin.base.exception.BaseException;
 import com.lab.dev.shawn.admin.business.concert.service.ConcertService;
 import com.lab.dev.shawn.admin.business.concert.vo.ConcertRequestVO;
 import com.lab.dev.shawn.admin.business.concert.vo.ConcertResponseVO;
+import com.lab.dev.shawn.admin.entity.Concert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +27,8 @@ public class ConcertController {
 
     @GetMapping("/list")
     public ResponseEntity<ApiResponseBody> list(int page, int limit, String name) {
-        Page<ConcertResponseVO> agents = concertService.findByName(page, limit, name);
-        ApiResponseBody body = new ApiResponseBody(agents);
+        Page<Concert> concerts = concertService.findByName(page, limit, name);
+        ApiResponseBody body = new ApiResponseBody(concerts);
         return ResponseEntity.ok(body);
     }
 

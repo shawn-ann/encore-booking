@@ -12,9 +12,6 @@ import java.time.LocalDate;
 public class TicketCategoryResponseVO {
 
     private Long id;
-    private Long concertId;
-    private String concertName;
     private String name;
-    private BaseStatus status;
 
 }

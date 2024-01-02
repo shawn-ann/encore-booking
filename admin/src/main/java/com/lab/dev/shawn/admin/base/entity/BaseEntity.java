@@ -1,5 +1,7 @@
 package com.lab.dev.shawn.admin.base.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,12 +18,16 @@ import java.time.LocalDateTime;
 @Data
 public class BaseEntity implements Serializable {
     @CreatedDate
+    @JsonIgnore
     private LocalDateTime createDate;
     @LastModifiedDate
+    @JsonIgnore
     private LocalDateTime updateDate;
     @Version
+    @JsonIgnore
     private int version;
     @Column(name = "is_deleted")
+    @JsonIgnore
     private boolean deleted;
 
     @PrePersist

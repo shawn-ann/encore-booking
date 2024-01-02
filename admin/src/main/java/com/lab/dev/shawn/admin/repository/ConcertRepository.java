@@ -16,11 +16,11 @@ import java.util.List;
 @Repository
 public interface ConcertRepository extends CrudRepository<Concert, Long> {
     @Query(value = """
-            SELECT new com.lab.dev.shawn.admin.business.concert.vo.ConcertResponseVO(a.id,a.name,a.createDate) 
+            SELECT a 
             FROM Concert a 
             WHERE a.deleted=false AND a.name LIKE %?1%
             """)
-    Page<ConcertResponseVO> findByName(String name, Pageable pageable);
+    Page<Concert> findByName(String name, Pageable pageable);
 
     @Lock(LockModeType.OPTIMISTIC)
     @Override

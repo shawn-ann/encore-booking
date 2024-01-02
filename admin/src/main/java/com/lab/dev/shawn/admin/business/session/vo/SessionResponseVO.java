@@ -9,9 +9,6 @@ import lombok.Data;
 public class SessionResponseVO {
 
     private Long id;
-    private Long concertId;
-    private String concertName;
     private String name;
-    private BaseStatus status;
 
 }
