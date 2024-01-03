@@ -44,4 +44,14 @@ public interface AgentRepository extends JpaRepository<Agent, Long> {
             and a.inventory.id = :inventoryId
             """)
     AgentTicketQuota findByAgentIdAndInventoryId(Long agentId, Long inventoryId);
+
+    @Query("""
+            SELECT 
+            a
+            FROM Agent a
+            WHERE a.deleted=false 
+            and a.status=com.lab.dev.shawn.api.base.constant.BaseStatus.ACTIVE
+            and a.mobile = :mobile
+            """)
+    Agent selectByMobile(String mobile);
 }

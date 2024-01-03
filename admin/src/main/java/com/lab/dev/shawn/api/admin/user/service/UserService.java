@@ -12,7 +12,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UserService {
 
     private static final MessageDigest MESSAGE_DIGEST_INSTANCE;

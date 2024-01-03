@@ -1,6 +1,6 @@
-import {fetchHome} from '../../services/home/home';
-import {fetchGoodsList} from '../../services/good/fetchGoods';
 import Toast from 'tdesign-miniprogram/toast/index';
+import {sendSms} from '../../services/login/login';
+import {fetchGoodsList} from "../../services/good/fetchGoods";
 
 
 Page({
@@ -43,9 +43,9 @@ Page({
 
         this.checkLoginActive();
     },
-
-    sendCode: function () {
+    async sendCode() {
         let that = this;
+        const smsCode = await sendSms(this.data.smsCode);
 
         // 模拟发送验证码请求
         Toast({

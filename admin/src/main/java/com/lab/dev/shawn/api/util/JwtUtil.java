@@ -1,5 +1,6 @@
 package com.lab.dev.shawn.api.util;
 
+import com.lab.dev.shawn.api.entity.Agent;
 import com.lab.dev.shawn.api.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -16,22 +17,17 @@ public class JwtUtil {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expirationMs);
 
-        return Jwts.builder()
-                .claim("id", user.getId())
-                .claim("name", user.getName())
-                .claim("roles", user.getRoles())
-                .claim("accountId", user.getAccountId())
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(key)
-                .compact();
+        return Jwts.builder().claim("id", user.getId()).claim("name", user.getName()).claim("roles", user.getRoles()).claim("accountId", user.getAccountId()).setIssuedAt(now).setExpiration(expiration).signWith(key).compact();
+    }
+
+    public static String generateToken(Agent agent) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + expirationMs);
+
+        return Jwts.builder().claim("id", agent.getId()).claim("name", agent.getName()).claim("roles", agent.getMobile()).setIssuedAt(now).setExpiration(expiration).signWith(key).compact();
     }
 
     public static Claims getTokenClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 }
