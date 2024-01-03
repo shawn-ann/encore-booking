@@ -171,7 +171,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="dialogStatus == 'create'" label="场次-票型" prop="inventoryId" label-width="120px">
+        <el-form-item v-if="dialogStatus == 'create'" label="场次-票档" prop="inventoryId" label-width="120px">
           <el-select
             v-model="temp.inventoryId"
             filterable
@@ -301,7 +301,7 @@ export default {
       rules: {
         concertId: [{ required: true, message: '请选择演唱会' }],
         agentId: [{ required: true, message: '请选择代理商' }],
-        inventoryId: [{ required: true, message: '请选择场次票型' }],
+        inventoryId: [{ required: true, message: '请选择场次票档' }],
         quantity: [
           { required: true, message: '请输入数量' },
           { type: 'number', message: '数量必须为数字值' }],

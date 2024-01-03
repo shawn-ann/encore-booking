@@ -31,7 +31,7 @@
               </el-form-item>
             </el-row>
             <el-row>
-              <el-form-item label="票型">
+              <el-form-item label="票档">
                 <el-tag v-for="item in props.row.ticketCategoryList" :key="item.id">{{ item.name }}</el-tag>
               </el-form-item>
             </el-row>
@@ -91,7 +91,7 @@
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item label="票型" prop="ticketCategoryList">
+        <el-form-item label="票档" prop="ticketCategoryList">
           <el-row
             v-for="ticket in temp.ticketCategoryList"
             :key="ticket.id"
@@ -218,7 +218,7 @@ export default {
       for (const index in this.temp.ticketCategoryList) {
         const item = this.temp.ticketCategoryList[index]
         if (!item.name) {
-          this.$message('请输入票型')
+          this.$message('请输入票档')
           return false
         }
       }
@@ -250,7 +250,7 @@ export default {
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
+        if (valid && this.validateForm()) {
           const tempData = Object.assign({}, this.temp)
           updateItem(tempData).then(() => {
             this.handleFilter()

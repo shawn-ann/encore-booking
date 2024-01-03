@@ -99,18 +99,18 @@ export const constantRoutes = [
         name: '演唱会管理',
         meta: { title: '演唱会管理', icon: 'list', affix: true }
       },
-      {
-        path: 'session/list',
-        component: () => import('@/views/concert/session/list'),
-        name: '场次管理',
-        meta: { title: '场次管理', icon: 'list' }
-      },
-      {
-        path: 'ticket-category/list',
-        component: () => import('@/views/concert/ticket-category/list'),
-        name: '票档管理',
-        meta: { title: '票档管理', icon: 'list' }
-      },
+      // {
+      //   path: 'session/list',
+      //   component: () => import('@/views/concert/session/list'),
+      //   name: '场次管理',
+      //   meta: { title: '场次管理', icon: 'list' }
+      // },
+      // {
+      //   path: 'ticket-category/list',
+      //   component: () => import('@/views/concert/ticket-category/list'),
+      //   name: '票档管理',
+      //   meta: { title: '票档管理', icon: 'list' }
+      // },
       {
         path: 'inventory/list',
         component: () => import('@/views/concert/inventory/list'),
