@@ -36,7 +36,12 @@ public class AgentService {
         return agentRepository.findByMobileContainingAndStatus_Active(mobile, name, pageable);
     }
 
-    public void create(AgentRequestVO agentRequestVO) {
+    public void create(AgentRequestVO agentRequestVO) throws BaseException {
+
+        Agent agentInDb = agentRepository.findByMobile(agentRequestVO.getMobile());
+        if (agentInDb != null) {
+            throw new BaseException(BaseExceptionEnum.MOBILE_ALREADY_EXIST);
+        }
         Agent agent = new Agent();
         agent.setName(agentRequestVO.getName());
         agent.setMobile(agentRequestVO.getMobile());
@@ -51,6 +56,12 @@ public class AgentService {
         }
         if (agent.getStatus().equals(BaseStatus.INACTIVE)) {
             throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
+        }
+        if (!agent.getMobile().equals(agentRequestVO.getMobile())) {
+            Agent agentInDb = agentRepository.findByMobile(agentRequestVO.getMobile());
+            if (agentInDb != null) {
+                throw new BaseException(BaseExceptionEnum.MOBILE_ALREADY_EXIST);
+            }
         }
         agent.setMobile(agentRequestVO.getMobile());
         agent.setName(agentRequestVO.getName());

@@ -11,6 +11,7 @@ public enum BaseExceptionEnum {
     CREATE_FAILED(50005, "创建失败，请稍后重试！"),
     DUPLICATED_RECORD(50006, "已存在该记录！"),
     UNALLOCATED_QUANTITY_NOT_ENOUGTH(50008, "未分配数量不足！"),
+    MOBILE_ALREADY_EXIST(50009,"手机号已存在！"),
 
 
     SMS_CODE_INCORRECT(40000, "验证码错误！"),

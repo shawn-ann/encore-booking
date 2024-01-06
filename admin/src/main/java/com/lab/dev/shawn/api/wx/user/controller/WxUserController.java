@@ -27,7 +27,7 @@ public class WxUserController {
     public ResponseEntity<ApiResponseBody> login(@RequestBody UserVO userVO) throws Exception {
         Agent agent = wxUserService.login(userVO.mobile, userVO.smsCode);
         String token = JwtUtil.generateToken(agent);
-        ApiResponseBody body = new ApiResponseBody(Map.of("token", token));
+        ApiResponseBody body = new ApiResponseBody(Map.of("token", token, "name", agent.getName(), "moible", agent.getMobile()));
         return ResponseEntity.ok(body);
     }
 

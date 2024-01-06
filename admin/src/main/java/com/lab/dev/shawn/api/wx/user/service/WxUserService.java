@@ -20,7 +20,7 @@ public class WxUserService {
         if (!sentSmsCode.equals(smsCode)) {
             throw new BaseException(BaseExceptionEnum.SMS_CODE_INCORRECT);
         }
-        Agent agent = agentRepository.selectByMobile(mobile);
+        Agent agent = agentRepository.findActiveByMobile(mobile);
         if (agent == null) {
             throw new BaseException(BaseExceptionEnum.USER_NOT_EXIST);
         }
@@ -28,7 +28,7 @@ public class WxUserService {
     }
 
     public String sendSmsCode(String mobile) throws BaseException {
-        Agent agent = agentRepository.selectByMobile(mobile);
+        Agent agent = agentRepository.findActiveByMobile(mobile);
         if (agent == null) {
             throw new BaseException(BaseExceptionEnum.USER_NOT_EXIST);
         }

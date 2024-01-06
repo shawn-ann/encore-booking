@@ -32,7 +32,7 @@ public class AgentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponseBody> create(@RequestBody AgentRequestVO agentRequestVO) {
+    public ResponseEntity<ApiResponseBody> create(@RequestBody AgentRequestVO agentRequestVO) throws BaseException {
         agentService.create(agentRequestVO);
         ApiResponseBody body = new ApiResponseBody("success");
         return ResponseEntity.ok(body);

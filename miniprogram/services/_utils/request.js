@@ -1,43 +1,30 @@
-function sendRequest(url, method, data) {
-    return new Promise(function(resolve, reject) {
-        var xhr = new XMLHttpRequest();
-        xhr.open(method, url);
-        xhr.setRequestHeader('Content-Type', 'application/json');
+import {serverUrl} from '../../config/index';
 
-        xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                resolve(xhr.response);
-            } else {
-                reject(new Error(xhr.statusText));
+export function request(api, method, data = "") {
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: serverUrl + api, // 实际API的请求地址
+            method: 'POST', // 请求方法，根据实际情况修改
+            data: data,
+            success: (res) => {
+                if (res.data.code == 20000) {
+                    resolve(res.data.data); // 返回请求成功的数据
+                } else if (res.data.code == 50001) {
+                    // 未登录
+                    wx.redirectTo({
+                        url: 'pages/login/index'
+                    })
+                } else {
+                    wx.showToast({
+                        title: res.data.message,
+                        icon: 'error',
+                        duration: 2000
+                    })
+                }
+            },
+            fail: (error) => {
+                reject(error); // 返回请求失败的错误信息
             }
-        };
-
-        xhr.onerror = function() {
-            reject(new Error('Network error'));
-        };
-
-        xhr.send(JSON.stringify(data));
-    });
-}
-
-export function request(url, method, data) {
-    const history = useHistory();
-
-    return sendRequest(url, method, data)
-        .then(function(response) {
-            var responseData = JSON.parse(response);
-
-            if (responseData.statusCode === 401) {
-                history.push('/login');
-                return Promise.reject(new Error('Unauthorized'));
-            }
-
-            // 其他状态码处理逻辑...
-
-            return responseData;
-        })
-        .catch(function(error) {
-            console.error('Request failed:', error);
-            throw error;
         });
+    });
 }

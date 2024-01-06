@@ -53,5 +53,16 @@ public interface AgentRepository extends JpaRepository<Agent, Long> {
             and a.status=com.lab.dev.shawn.api.base.constant.BaseStatus.ACTIVE
             and a.mobile = :mobile
             """)
-    Agent selectByMobile(String mobile);
+    Agent findActiveByMobile(String mobile);
+
+    @Query("""
+            SELECT 
+            a
+            FROM Agent a
+            WHERE a.deleted=false 
+            and a.mobile = :mobile
+            """)
+    Agent findByMobile(String mobile);
+
+
 }
