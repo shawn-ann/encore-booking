@@ -1,15 +1,35 @@
 <wxs module="order" src="./order.wxs" />
 <form>
+
 <view class="order-sure" wx:if="{{!loading}}">
   <view class="order-wrapper" >
     <view class="goods-wrapper">
-      <t-image src="{{goods.thumb}}" t-class="goods-image" mode="aspectFill" />
+<!--      <t-image src="{{goods.thumb}}" t-class="goods-image" mode="aspectFill" />-->
       <view class="goods-content">
-        <view class="goods-title">{{goods.title}}</view>
+        <view class="goods-title">{{goods.name}}</view>
+        <view>场次</view>
+        <view class="wrapper">
+          <t-radio-group t-class="horizontal-box" value="场次" bind:change="onChange1">
+            <view wx:for="{{goods.sessions}}" wx:key="index" class="card {{selectedSessionIndex == index ? 'card--active' : ''}}">
+              <t-icon wx:if="{{selectedSessionIndex == index}}" name="check" t-class="card__icon" />
+              <t-radio value="{{item.id}}" label="{{item.name}}" icon="none" borderless />
+            </view>
+          </t-radio-group>
+        </view>
+        <t-divider />
+        <view>票型</view>
+        <view class="wrapper">
+          <t-radio-group t-class="horizontal-box" value="场次" bind:change="onChange1">
+            <view wx:for="{{goods.sessions}}" wx:key="index" class="card {{selectedSessionIndex == index ? 'card--active' : ''}}">
+              <t-icon wx:if="{{selectedSessionIndex == index}}" name="check" t-class="card__icon" />
+              <t-radio value="{{item.id}}" label="{{item.name}}" icon="none" borderless />
+            </view>
+          </t-radio-group>
+        </view>
       </view>
-      <view class="goods-right">
-        <price wr-class="goods-price" price="{{goods.price}}" fill="{{true}}" decimalSmaller />
-      </view>
+<!--      <view class="goods-right">-->
+<!--        <price wr-class="goods-price" price="{{goods.price}}" fill="{{true}}" decimalSmaller />-->
+<!--      </view>-->
     </view>
   </view>
   <view class="buyer-card">

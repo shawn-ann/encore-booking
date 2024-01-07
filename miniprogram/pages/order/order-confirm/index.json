@@ -11,6 +11,9 @@
     "select-coupons": "../components/selectCoupons/selectCoupons",
     "no-goods": "../components/noGoods/noGoods",
     "t-image": "/components/webp-image/index",
-    "t-input": "tdesign-miniprogram/input/input"
+    "t-input": "tdesign-miniprogram/input/input",
+    "t-radio-group": "tdesign-miniprogram/radio-group/radio-group",
+    "t-divider": "tdesign-miniprogram/divider/divider",
+    "t-radio": "tdesign-miniprogram/radio/radio"
   }
 }

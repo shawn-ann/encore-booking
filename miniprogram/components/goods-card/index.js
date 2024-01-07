@@ -94,7 +94,7 @@ Component({
 
     init() {
       const { thresholds, id } = this.properties;
-      this.genIndependentID(id);
+      // this.genIndependentID(id);
       if (thresholds && thresholds.length) {
         this.createIntersectionObserverHandle();
       }

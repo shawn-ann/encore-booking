@@ -50,8 +50,8 @@ public interface AgentTicketQuotaRepository extends JpaRepository<AgentTicketQuo
     @Query("""
             Select a
             from AgentTicketQuota a 
-            where a.deleted=false 
-            and  a.agent.id = :agentId
+            where a.deleted=false
+            and a.agent.id = :agentId and a.agent.deleted = false and a.agent.status = com.lab.dev.shawn.api.base.constant.BaseStatus.ACTIVE
             """)
     List<AgentTicketQuota> findByAgentId(Long agentId);
 
@@ -62,4 +62,21 @@ public interface AgentTicketQuotaRepository extends JpaRepository<AgentTicketQuo
             and  a.inventory.id = :inventoryId
             """)
     List<AgentTicketQuota> findByInventoryId(Long inventoryId);
+
+    @Query("""
+            Select a
+            from AgentTicketQuota a 
+            where a.deleted=false and a.status = com.lab.dev.shawn.api.base.constant.BaseStatus.ACTIVE
+            and a.agent.id = :agentId and a.agent.deleted = false and a.agent.status = com.lab.dev.shawn.api.base.constant.BaseStatus.ACTIVE
+            """)
+    List<AgentTicketQuota> findActivatedByAgentId(Long agentId);
+
+    @Query("""
+            Select a
+            from AgentTicketQuota a 
+            where a.deleted=false and a.status = com.lab.dev.shawn.api.base.constant.BaseStatus.ACTIVE
+            and a.agent.id = :agentId and a.agent.status = com.lab.dev.shawn.api.base.constant.BaseStatus.ACTIVE
+            and a.inventory.concert.id = :concertId and a.inventory.status = com.lab.dev.shawn.api.base.constant.BaseStatus.ACTIVE
+            """)
+    List<AgentTicketQuota> findActivatedByAgentIdAndConcertId(Long agentId, Long concertId);
 }

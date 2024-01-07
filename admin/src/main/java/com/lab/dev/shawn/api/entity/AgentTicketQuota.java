@@ -5,6 +5,7 @@ import com.lab.dev.shawn.api.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Data
@@ -20,6 +21,7 @@ public class AgentTicketQuota extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "inventory_id")
+    @Where(clause = "is_deleted = false and status=com.lab.dev.shawn.api.base.constant.BaseStatus.ACTIVE")
     private Inventory inventory;
 
     private int totalQuantity;

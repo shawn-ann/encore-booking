@@ -1,7 +1,6 @@
 import Toast from 'tdesign-miniprogram/toast/index';
-import {fetchSettleDetail} from '../../../services/order/orderConfirm';
+import {fetchTickets} from '../../../services/ticket/fetchTickets';
 import {commitPay, wechatPayOrder} from './pay';
-import {getAddressPromise} from '../../usercenter/address/list/util';
 
 const stripeImg = `https://cdn-we-retail.ym.tencent.com/miniapp/order/stripe.png`;
 
@@ -10,11 +9,10 @@ Page({
         placeholder: '备注信息',
         stripeImg,
         loading: false,
+        selectedSessionIndex: 0,
         goods: {
-            price: 29990,
-            thumb: "",
-            title: '',
-            stock: 200
+            name: '',
+            sessions: []
         },
         settleDetailData: {
             storeGoodsList: [], //正常下单商品列表
@@ -61,17 +59,18 @@ Page({
     },
     // 处理不同情况下跳转到结算页时需要的参数
     handleOptionsParams(options) {
-        let {goodsRequest} = this; // 商品列表
+        let {concertId} = options; // 商品列表
 
-        if (typeof options.goodsRequest === 'string') {
-            goodsRequest = JSON.parse(options.goodsRequest);
-        }
+        fetchTickets(concertId).then(res => {
+            this.setData({
+                loading: false,
+                goods: res
+            });
 
-        this.setData({
-            loading: false,
-            goods: goodsRequest
+            // this.updateTotalAmount();
         });
-        this.updateTotalAmount();
+
+
         // //获取结算页请求数据列表
         // this.goodsRequest = goodsRequest;
         // const params = {
@@ -508,8 +507,8 @@ Page({
     handleSmsCodeInput(event) {
         let value = event.detail.value; // 获取输入框的值
 
-         this.setData({
-             inputSmsCode: value // 更新购买人信息列表
+        this.setData({
+            inputSmsCode: value // 更新购买人信息列表
         });
     },
     handlePhoneNumberInput(event) {

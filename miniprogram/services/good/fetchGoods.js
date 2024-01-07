@@ -1,4 +1,5 @@
 import { config } from '../../config/index';
+import {request} from "../_utils/request";
 
 /** 获取商品列表 */
 function mockFetchGoodsList(pageIndex = 1, pageSize = 20) {
@@ -19,10 +20,9 @@ function mockFetchGoodsList(pageIndex = 1, pageSize = 20) {
 
 /** 获取商品列表 */
 export function fetchGoodsList(pageIndex = 1, pageSize = 20) {
-  if (config.useMock) {
-    return mockFetchGoodsList(pageIndex, pageSize);
-  }
-  return new Promise((resolve) => {
-    resolve('real api');
-  });
+  // if (config.useMock) {
+  //   return mockFetchGoodsList(pageIndex, pageSize);
+  // }
+  let api = "/wx/ticket/list"
+  return request(api, "GET")
 }

@@ -58,16 +58,17 @@
 
 .goods-card__title {
   flex-shrink: 0;
-  font-size: 28rpx;
+  font-size: 32rpx;
   color: #333;
   font-weight: 400;
   display: -webkit-box;
-  height: 72rpx;
+  /*height: 72rpx;*/
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
   word-break: break-word;
-  line-height: 36rpx;
+  line-height: 42rpx;
+  padding-bottom: 20rpx;
 }
 
 .goods-card__tags {

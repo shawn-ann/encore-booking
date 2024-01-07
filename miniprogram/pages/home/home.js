@@ -1,166 +1,117 @@
-import { fetchHome } from '../../services/home/home';
-import { fetchGoodsList } from '../../services/good/fetchGoods';
+import {fetchHome} from '../../services/home/home';
+import {fetchConcerts} from '../../services/concert/fetchConcerts';
 import Toast from 'tdesign-miniprogram/toast/index';
 
 const obj2Params = (obj = {}, encode = false) => {
-  const result = [];
-  Object.keys(obj).forEach((key) =>
-    result.push(`${key}=${encode ? encodeURIComponent(obj[key]) : obj[key]}`),
-  );
+    const result = [];
+    Object.keys(obj).forEach((key) =>
+        result.push(`${key}=${encode ? encodeURIComponent(obj[key]) : obj[key]}`),
+    );
 
-  return result.join('&');
+    return result.join('&');
 };
 
 Page({
-  data: {
-    imgSrcs: [],
-    tabList: [],
-    goodsList: [],
-    goodsListLoadStatus: 0,
-    pageLoading: false,
-    current: 1,
-    autoplay: true,
-    duration: '500',
-    interval: 5000,
-    navigation: { type: 'dots' },
-    swiperImageProps: { mode: 'scaleToFill' },
-  },
-
-  goodListPagination: {
-    index: 0,
-    num: 20,
-  },
-
-  privateData: {
-    tabIndex: 0,
-  },
-
-  onShow() {
-    this.getTabBar().init();
-  },
-
-  onLoad() {
-    this.init();
-  },
-
-  onReachBottom() {
-    if (this.data.goodsListLoadStatus === 0) {
-      this.loadGoodsList();
-    }
-  },
-
-  onPullDownRefresh() {
-    this.init();
-  },
-
-  init() {
-    // this.checkLogin();
-    this.loadHomePage();
-  },
-  checkLogin() {
-    this.navToLogin();
-  },
-  navToLogin() {
-    wx.navigateTo({ url: '/pages/login/index' });
-  },
-
-  loadHomePage() {
-    wx.stopPullDownRefresh();
-
-    this.setData({
-      pageLoading: true,
-    });
-    fetchHome().then(({ swiper, tabList }) => {
-      this.setData({
-        tabList,
-        imgSrcs: swiper,
+    data: {
+        imgSrcs: [],
+        tabList: [],
+        concertList: [],
+        concertListLoadStatus: 0,
         pageLoading: false,
-      });
-      this.loadGoodsList(true);
-    });
-  },
+        current: 1,
+        autoplay: true,
+        duration: '500',
+        interval: 5000,
+        navigation: {type: 'dots'},
+        swiperImageProps: {mode: 'scaleToFill'},
+    },
 
-  tabChangeHandle(e) {
-    this.privateData.tabIndex = e.detail;
-    this.loadGoodsList(true);
-  },
+    goodListPagination: {
+        index: 0,
+        num: 20,
+    },
 
-  onReTry() {
-    this.loadGoodsList();
-  },
+    privateData: {
+        tabIndex: 0,
+    },
 
-  async loadGoodsList(fresh = false) {
-    if (fresh) {
-      wx.pageScrollTo({
-        scrollTop: 0,
-      });
-    }
+    onShow() {
+        this.getTabBar().init();
+    },
 
-    this.setData({ goodsListLoadStatus: 1 });
+    onLoad() {
+        this.init();
+    },
 
-    const pageSize = this.goodListPagination.num;
-    let pageIndex = this.privateData.tabIndex * pageSize + this.goodListPagination.index + 1;
-    if (fresh) {
-      pageIndex = 0;
-    }
+    onReachBottom() {
+        if (this.data.concertListLoadStatus === 0) {
+            this.loadConcertList();
+        }
+    },
 
-    try {
-      const nextList = await fetchGoodsList(pageIndex, pageSize);
-      
-      this.setData({
-        goodsList: fresh ? nextList : this.data.goodsList.concat(nextList),
-        goodsListLoadStatus: 0,
-      });
+    onPullDownRefresh() {
+        this.init();
+    },
 
-      this.goodListPagination.index = pageIndex;
-      this.goodListPagination.num = pageSize;
-    } catch (err) {
-      this.setData({ goodsListLoadStatus: 3 });
-    }
-  },
+    init() {
+        this.loadHomePage();
+    },
 
-  goodListClickHandle(e) {
-    // const { index } = e.detail;
-    // const { spuId } = this.data.goodsList[index];
-    // wx.navigateTo({
-    //   url: `/pages/goods/details/index?spuId=${spuId}`,
-    // });
-  },
+    loadHomePage() {
+        // wx.stopPullDownRefresh();
 
-  goodListAddCartHandle(e) {
-    const { index } = e.detail;
-    const goods = this.data.goodsList[index];
+        this.setData({
+            pageLoading: true,
+        });
+        this.loadConcertList();
+    },
 
-    const query = {
-      quantity: 1,
-      spuId: goods.spuId,
-      goodsName: goods.title,
-      // skuId:
-      //   type === 1 ? this.data.skuList[0].skuId : this.data.selectItem.skuId,
-      thumb: goods.thumb,
-      image: goods.thumb,
-      title: goods.title,
-      price: goods.price,
-      stock: goods.spuStockQuantity
-    };
-    let urlQueryStr = obj2Params({
-      goodsRequest: JSON.stringify(query),
-    });
-    urlQueryStr = urlQueryStr ? `?${urlQueryStr}` : '';
-    const path = `/pages/order/order-confirm/index${urlQueryStr}`;
-    wx.navigateTo({
-      url: path,
-    });
-  },
+    tabChangeHandle(e) {
+        this.privateData.tabIndex = e.detail;
+        this.loadConcertList(true);
+    },
 
-  navToSearchPage() {
-    wx.navigateTo({ url: '/pages/goods/search/index' });
-  },
+    onReTry() {
+        this.loadConcertList();
+    },
 
-  navToActivityDetail({ detail }) {
-    const { index: promotionID = 0 } = detail || {};
-    wx.navigateTo({
-      url: `/pages/promotion-detail/index?promotion_id=${promotionID}`,
-    });
-  },
+    loadConcertList() {
+        try {
+            fetchConcerts().then(res => {
+                this.setData({
+                    concertList: res,
+                    pageLoading: false,
+                });
+            });
+        } catch (err) {
+            this.setData({concertListLoadStatus: 3});
+        }
+    },
+
+    goodListClickHandle(e) {
+        // const { index } = e.detail;
+        // const { spuId } = this.data.concertList[index];
+        // wx.navigateTo({
+        //   url: `/pages/concert/details/index?spuId=${spuId}`,
+        // });
+    },
+
+    buy(e) {
+        const concertId = e.currentTarget.dataset.id;
+        const path = `/pages/order/order-confirm/index?concertId=` + concertId;
+        wx.navigateTo({
+            url: path,
+        });
+    },
+
+    navToSearchPage() {
+        wx.navigateTo({url: '/pages/concert/search/index'});
+    },
+
+    navToActivityDetail({detail}) {
+        const {index: promotionID = 0} = detail || {};
+        wx.navigateTo({
+            url: `/pages/promotion-detail/index?promotion_id=${promotionID}`,
+        });
+    },
 });

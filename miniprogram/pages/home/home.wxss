@@ -18,7 +18,7 @@ page {
 .home-page-container,
 .home-page-header {
   display: block;
-  padding: 0 24rpx;
+  padding: 12rpx 24rpx 0rpx 24rpx;
 }
 
 .home-page-header .t-search__input-container {
