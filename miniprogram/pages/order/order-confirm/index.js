@@ -10,9 +10,10 @@ Page({
         stripeImg,
         loading: false,
         selectedSessionIndex: 0,
+        selectedTicketIndex: 0,
         goods: {
             name: '',
-            sessions: []
+            sessions: [],
         },
         settleDetailData: {
             storeGoodsList: [], //正常下单商品列表
@@ -57,37 +58,27 @@ Page({
         const {goodsRequest} = this;
         this.handleOptionsParams({goodsRequest});
     },
+    onChangeSession(event) {
+        const {value} = event.detail;
+        this.setData({selectedSessionIndex: value,selectedTicketIndex:0});
+        this.updateTotalAmount();
+    },
+    onChangeTicketCategory(event) {
+        const {value} = event.detail;
+        this.setData({selectedTicketIndex: value});
+        this.updateTotalAmount();
+    },
     // 处理不同情况下跳转到结算页时需要的参数
     handleOptionsParams(options) {
         let {concertId} = options; // 商品列表
-
+        let that = this;
         fetchTickets(concertId).then(res => {
             this.setData({
                 loading: false,
                 goods: res
             });
-
-            // this.updateTotalAmount();
+            that.updateTotalAmount();
         });
-
-
-        // //获取结算页请求数据列表
-        // this.goodsRequest = goodsRequest;
-        // const params = {
-        //     goodsRequest,
-        // };
-        // fetchSettleDetail(params).then(
-        //     (res) => {
-        //         this.setData({
-        //             loading: false,
-        //         });
-        //         this.initData(res.data);
-        //     },
-        //     () => {
-        //         //接口异常处理
-        //         this.handleError();
-        //     },
-        // );
     },
     initData(resData) {
         // 转换商品卡片显示数据
@@ -472,7 +463,7 @@ Page({
         if (!canAdd) {
             return;
         }
-        if (this.data.buyerList.length > this.data.goods.stock) {
+        if (this.data.buyerList.length > this.data.goods.remainingQuantity) {
             Toast({
                 context: this,
                 selector: '#t-toast',
@@ -489,8 +480,8 @@ Page({
         this.updateTotalAmount();
     },
     updateTotalAmount() {
-        let price = parseInt(this.data.goods.price * 100);
-        let amount = price * this.data.buyerList.length / 100;
+        let price = parseInt(this.data.goods.sessions[this.data.selectedSessionIndex].tickets[this.data.selectedTicketIndex].price);
+        let amount = price * this.data.buyerList.length;
         this.setData({totalPayAmount: amount});
     },
     handleNameChange(event) {

@@ -7,22 +7,22 @@
 <!--      <t-image src="{{goods.thumb}}" t-class="goods-image" mode="aspectFill" />-->
       <view class="goods-content">
         <view class="goods-title">{{goods.name}}</view>
-        <view>场次</view>
+        <view class="goods-title">场次</view>
         <view class="wrapper">
-          <t-radio-group t-class="horizontal-box" value="场次" bind:change="onChange1">
+          <t-radio-group t-class="horizontal-box" value="场次" bind:change="onChangeSession">
             <view wx:for="{{goods.sessions}}" wx:key="index" class="card {{selectedSessionIndex == index ? 'card--active' : ''}}">
               <t-icon wx:if="{{selectedSessionIndex == index}}" name="check" t-class="card__icon" />
-              <t-radio value="{{item.id}}" label="{{item.name}}" icon="none" borderless />
+              <t-radio value="{{index}}" label="{{item.name}}" icon="none" borderless />
             </view>
           </t-radio-group>
         </view>
         <t-divider />
-        <view>票型</view>
+        <view class="goods-title">票型</view>
         <view class="wrapper">
-          <t-radio-group t-class="horizontal-box" value="场次" bind:change="onChange1">
-            <view wx:for="{{goods.sessions}}" wx:key="index" class="card {{selectedSessionIndex == index ? 'card--active' : ''}}">
-              <t-icon wx:if="{{selectedSessionIndex == index}}" name="check" t-class="card__icon" />
-              <t-radio value="{{item.id}}" label="{{item.name}}" icon="none" borderless />
+          <t-radio-group t-class="horizontal-box" value="场次" bind:change="onChangeTicketCategory">
+            <view wx:for="{{goods.sessions[selectedSessionIndex].tickets}}" wx:key="index" class="card {{selectedTicketIndex == index ? 'card--active' : ''}}">
+              <t-icon wx:if="{{selectedTicketIndex == index}}" name="check" t-class="card__icon" />
+              <t-radio value="{{index}}" label="{{item.ticketCategoryName +'(余'+item.remainingQuantity+')'}}" icon="none" borderless />
             </view>
           </t-radio-group>
         </view>

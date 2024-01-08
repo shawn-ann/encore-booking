@@ -5,6 +5,7 @@
   overflow: hidden;
   box-sizing: border-box;
   border: 3rpx solid #fff;
+  word-break: break-word;
 }
 
 .card--active {
@@ -35,18 +36,19 @@
 .horizontal-box {
   width: calc(100% - 64rpx);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   /*margin: 32rpx;*/
 }
 
 .horizontal-box .card {
-  flex: 1;
-  margin: 0;
+  margin: 5rpx;
+  flex-basis: calc(50% - 10rpx);
   border-color: grey;
 }
 
 .horizontal-box .card + .card {
-  margin-left: 24rpx;
+  /*margin-left: 24rpx;*/
 }
 
 
