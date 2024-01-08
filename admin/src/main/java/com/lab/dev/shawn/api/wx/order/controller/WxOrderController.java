@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class WxOrderController {
 
     @Autowired
-    private WxOrderService wxTicketService;
+    private WxOrderService wxOrderService;
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponseBody> list(HttpServletRequest request) {
+    public ResponseEntity<ApiResponseBody> create(@RequestBody CreateOrderRequestVO requestVO,HttpServletRequest request) {
 
         String token = request.getHeader("X-Token");
         Long agentId = JwtUtil.getTokenClaims(token).get("id", Long.class);
 
-//        List<WxConcertResponseVO> tickets = wxTicketService.findConcertsByAgentId(agentId);
-        ApiResponseBody body = new ApiResponseBody(null);
+        CreateOrderResponseDTO response = wxOrderService.create(requestVO, agentId);
+        ApiResponseBody body = new ApiResponseBody(response);
         return ResponseEntity.ok(body);
     }
 }
