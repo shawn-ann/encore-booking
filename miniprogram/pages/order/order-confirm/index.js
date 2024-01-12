@@ -1,6 +1,7 @@
 import Toast from 'tdesign-miniprogram/toast/index';
 import {fetchTickets} from '../../../services/ticket/fetchTickets';
 import {commitPay, wechatPayOrder} from './pay';
+import {sendVerifyCode, verifyVerifyCode} from '../../../services/verify_code/sendVerifyCode';
 
 const stripeImg = `https://cdn-we-retail.ym.tencent.com/miniapp/order/stripe.png`;
 
@@ -60,7 +61,7 @@ Page({
     },
     onChangeSession(event) {
         const {value} = event.detail;
-        this.setData({selectedSessionIndex: value,selectedTicketIndex:0});
+        this.setData({selectedSessionIndex: value, selectedTicketIndex: 0});
         this.updateTotalAmount();
     },
     onChangeTicketCategory(event) {
@@ -109,30 +110,31 @@ Page({
         if (this.data.smsCountDown > 0) {
             return;
         }
-        // send sms
-        this.setData({smsCountDown: 60, smsCode: "1111"});
-        Toast({
-            context: this,
-            selector: '#t-toast',
-            message: '短信已发送(1111)',
-            duration: 2000,
-            icon: '',
-        });
-        let that = this;
-        // 开始倒计时
-        let timer = setInterval(function () {
-            let currentCountdown = that.data.smsCountDown;
+        sendVerifyCode('', false).then(res => {
+            this.setData({smsCountDown: 60, smsCode: res});
+            Toast({
+                context: this,
+                selector: '#t-toast',
+                message: '短信已发送',
+                duration: 2000,
+                icon: '',
+            });
+            let that = this;
+            // 开始倒计时
+            let timer = setInterval(function () {
+                let currentCountdown = that.data.smsCountDown;
 
-            if (currentCountdown > 0) {
-                // 倒计时减1秒
-                that.setData({
-                    smsCountDown: currentCountdown - 1
-                });
-            } else {
-                // 倒计时为0，清除定时器
-                clearInterval(timer);
-            }
-        }, 1000);
+                if (currentCountdown > 0) {
+                    // 倒计时减1秒
+                    that.setData({
+                        smsCountDown: currentCountdown - 1
+                    });
+                } else {
+                    // 倒计时为0，清除定时器
+                    clearInterval(timer);
+                }
+            }, 1000);
+        });
     },
     handleError() {
         Toast({
@@ -305,10 +307,14 @@ Page({
             });
             return
         }
-        this.setData({
-            dialogVisible: false
-        });
-        this.submitOrder();
+        let that = this;
+        verifyVerifyCode('', this.data.inputSmsCode).then(res => {
+            that.setData({
+                dialogVisible: false
+            });
+            that.submitOrder();
+        })
+
     },
     cancelHandle() {
         this.setData({
@@ -502,7 +508,7 @@ Page({
             inputSmsCode: value // 更新购买人信息列表
         });
     },
-    handlePhoneNumberInput(event) {
+    handleMobileInput(event) {
         let index = event.currentTarget.dataset.index; // 获取当前表单的索引
         let value = event.detail.value; // 获取输入框的值
 

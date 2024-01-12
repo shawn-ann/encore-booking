@@ -1,5 +1,6 @@
 import Toast from 'tdesign-miniprogram/toast/index';
-import {sendSms, loginSubmit} from '../../services/login/login';
+import {loginSubmit} from '../../services/login/login';
+import {sendVerifyCode} from '../../services/verify_code/sendVerifyCode';
 import {fetchGoodsList} from "../../services/good/fetchGoods";
 
 
@@ -40,7 +41,7 @@ Page({
         this.checkLoginActive();
     }, sendCode() {
         let that = this;
-        sendSms(this.data.mobile).then(smsCode => {
+        sendVerifyCode(this.data.mobile, true).then(smsCode => {
             if (!smsCode) {
                 return;
             }

@@ -71,6 +71,17 @@ public interface AgentTicketQuotaRepository extends JpaRepository<AgentTicketQuo
             """)
     List<AgentTicketQuota> findActivatedByAgentId(Long agentId);
 
+    @Modifying
+    @Query("""
+            UPDATE AgentTicketQuota t 
+            SET
+            t.remainingQuantity = t.remainingQuantity + :quantity,
+            t.version=t.version+1,
+            t.updateDate = CURRENT_TIMESTAMP 
+            WHERE t.id = :id AND t.deleted=false 
+            AND t.remainingQuantity + :quantity >= 0
+            """)
+    int addRemainingQuantity(Long id, int quantity);
     @Query("""
             Select a
             from AgentTicketQuota a 

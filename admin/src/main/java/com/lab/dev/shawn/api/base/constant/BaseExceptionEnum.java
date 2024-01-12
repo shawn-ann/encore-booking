@@ -12,9 +12,12 @@ public enum BaseExceptionEnum {
     DUPLICATED_RECORD(50006, "已存在该记录！"),
     UNALLOCATED_QUANTITY_NOT_ENOUGTH(50008, "未分配数量不足！"),
     MOBILE_ALREADY_EXIST(50009,"手机号已存在！"),
+    INSUFFICIENT_STOCK(50010,"库存不足，请刷新重试！"),
+    OPERATION_FAILED(50011, "操作失败，请稍后重试！"),
 
 
     SMS_CODE_INCORRECT(40000, "验证码错误！"),
+    SMS_CODE_ALREADY_SEND(40000, "您在一分钟内已经发送过验证码了，请稍后重试！"),
 
     USER_NOT_EXIST(40000, "用户不存在！"),
     ;

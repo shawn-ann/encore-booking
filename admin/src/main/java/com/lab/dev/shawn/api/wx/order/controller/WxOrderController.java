@@ -1,6 +1,7 @@
 package com.lab.dev.shawn.api.wx.order.controller;
 
 import com.lab.dev.shawn.api.base.dto.ApiResponseBody;
+import com.lab.dev.shawn.api.base.exception.BaseException;
 import com.lab.dev.shawn.api.util.JwtUtil;
 import com.lab.dev.shawn.api.wx.order.dto.CreateOrderResponseDTO;
 import com.lab.dev.shawn.api.wx.order.service.WxOrderService;
@@ -21,7 +22,7 @@ public class WxOrderController {
     private WxOrderService wxOrderService;
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponseBody> create(@RequestBody CreateOrderRequestVO requestVO, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseBody> create(@RequestBody CreateOrderRequestVO requestVO, HttpServletRequest request) throws BaseException {
 
         String token = request.getHeader("X-Token");
         Long agentId = JwtUtil.getTokenClaims(token).get("id", Long.class);
@@ -30,4 +31,15 @@ public class WxOrderController {
         ApiResponseBody body = new ApiResponseBody(response);
         return ResponseEntity.ok(body);
     }
+
+    @PostMapping("/pay")
+    public ResponseEntity<ApiResponseBody> pay(@RequestBody String orderId, HttpServletRequest request) throws BaseException {
+
+        String token = request.getHeader("X-Token");
+        Long agentId = JwtUtil.getTokenClaims(token).get("id", Long.class);
+
+        ApiResponseBody body = new ApiResponseBody(null);
+        return ResponseEntity.ok(body);
+    }
+
 }
