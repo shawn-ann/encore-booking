@@ -108,3 +108,6 @@ wr-order-goods-card:not(:first-child) .wr-goods-card {
   --td-button-primary-text-color: #fa4126;
 }
 
+.block{
+  font-size: 30rpx;
+}

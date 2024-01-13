@@ -26,8 +26,8 @@
                 {{order.orderNumber}}
             </view>
             <view>
-                <t-row class="block" style="font-size: 30rpx;">
-                    <t-col span="24" t-class="dark">{{order.concertName}}</t-col>
+                <t-row class="block">
+                    <t-col span="24">{{order.concertName}}</t-col>
                 </t-row>
                 <t-row class="block">
                     <t-tag class="margin-16" variant="light" theme="primary">

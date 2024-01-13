@@ -64,6 +64,9 @@ public class WxOrderService {
         order.setBuyCount(buyerCount);
         order.setAgent(agent);
         order.setBuyPrice(agentTicketQuota.getPrice());
+        order.setConcertName(agentTicketQuota.getInventory().getConcert().getName());
+        order.setSessionName(agentTicketQuota.getInventory().getSession().getName());
+        order.setTicketCategoryName(agentTicketQuota.getInventory().getTicketCategory().getName());
         order.setTotalFee(agentTicketQuota.getPrice() * buyerCount);
         order.setStatus(OrderStatus.CREATED);
 
@@ -121,9 +124,9 @@ public class WxOrderService {
         map.put("statusDesc", order.getStatus().getName());
         map.put("buyCount", order.getBuyCount());
         map.put("createDate", order.getCreateDate().format(DATE_TIME_FORMATTER));
-        map.put("concertName", order.getAgentTicketQuota().getInventory().getConcert().getName());
-        map.put("sessionName", order.getAgentTicketQuota().getInventory().getSession().getName());
-        map.put("ticketCategoryName", order.getAgentTicketQuota().getInventory().getTicketCategory().getName());
+        map.put("concertName", order.getConcertName());
+        map.put("sessionName", order.getSessionName());
+        map.put("ticketCategoryName", order.getTicketCategoryName());
         List<Object> buyerList = order.getBuyerList().stream().map(bookingBuyer -> {
             HashMap<String, Object> bueryMap = new HashMap<>();
             bueryMap.put("id", bookingBuyer.getId());
