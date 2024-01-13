@@ -17,6 +17,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponseBody> handleException(Exception ex) {
+        ex.printStackTrace();
         ApiResponseBody response = new ApiResponseBody(500, "系统异常，请联系管理员", null);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
