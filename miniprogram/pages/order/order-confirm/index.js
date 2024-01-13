@@ -1,6 +1,7 @@
 import Toast from 'tdesign-miniprogram/toast/index';
 import {fetchTickets} from '../../../services/ticket/fetchTickets';
-import {commitPay, wechatPayOrder} from './pay';
+import {wechatPayOrder} from './pay';
+import { createOrder } from '../../../services/order/orderConfirm';
 import {sendVerifyCode, verifyVerifyCode} from '../../../services/verify_code/sendVerifyCode';
 
 const stripeImg = `https://cdn-we-retail.ym.tencent.com/miniapp/order/stripe.png`;
@@ -32,7 +33,7 @@ Page({
         promotionGoodsList: [], //当前门店商品列表(优惠券)
         currentStoreId: null, //当前优惠券storeId
         buyerList: [
-            {name: "王XXX", phoneNumber: "13664227822", idNumber: "110133199901017890"},
+            {name: "王XXX", mobile: "13664227822", idNumber: "110133199901017890"},
         ],
         canPay: false,
         dialogVisible: false,
@@ -153,7 +154,6 @@ Page({
         });
     },
     getRequestGoodsList(storeGoodsList) {
-        debugger;
         const filterStoreGoodsList = [];
         storeGoodsList &&
         storeGoodsList.forEach((store) => {
@@ -325,37 +325,15 @@ Page({
     // 提交订单
     submitOrder() {
         this.payLock = true;
-        const {goods, buyerList} = this.data;
-
+        let quotaId = this.data.goods.sessions[this.data.selectedSessionIndex].tickets[this.data.selectedTicketIndex].quotaId;
         const params = {
-            goods: goods,
-            buyerList: buyerList
+            quotaId: quotaId,
+            buyerList: this.data.buyerList
         };
-        wx.redirectTo({url: `/pages/order/pay-result/index`});
-
-        commitPay(params).then(
+        createOrder(params).then(
             (res) => {
                 this.payLock = false;
-                const {data} = res;
-                // 提交出现 失效 不在配送范围 限购的商品 提示弹窗
-                if (this.isInvalidOrder(data)) {
-                    return;
-                }
-                if (res.code === 'Success') {
-                    this.handlePay(data, settleDetailData);
-                } else {
-                    Toast({
-                        context: this,
-                        selector: '#t-toast',
-                        message: res.msg || '提交订单超时，请稍后重试',
-                        duration: 2000,
-                        icon: '',
-                    });
-                    setTimeout(() => {
-                        // 提交支付失败   返回购物车
-                        wx.navigateBack();
-                    }, 2000);
-                }
+                this.handlePay(res);
             },
             (err) => {
                 this.payLock = false;
@@ -411,22 +389,22 @@ Page({
         );
     },
     // 处理支付
-    handlePay(data, settleDetailData) {
-        const {channel, payInfo, tradeNo, interactId, transactionId} = data;
-        const {totalAmount, totalPayAmount} = settleDetailData;
+    handlePay(data) {
+        const {payInfo, orderNumber, totalFee} = data;
         const payOrderInfo = {
             payInfo: payInfo,
-            orderId: tradeNo,
-            orderAmt: totalAmount,
-            payAmt: totalPayAmount,
-            interactId: interactId,
-            tradeNo: tradeNo,
-            transactionId: transactionId,
+            orderId: orderNumber,
+            orderAmt: totalFee,
+            payAmt: totalFee,
+            interactId: orderNumber,
+            tradeNo: orderNumber,
+            transactionId: orderNumber,
         };
 
-        if (channel === 'wechat') {
-            wechatPayOrder(payOrderInfo);
-        }
+        wechatPayOrder(payOrderInfo).then(res =>{
+            // 支付成功
+            wx.redirectTo({url: `/pages/order/pay-result/index`});
+        });
     },
 
     hide() {
@@ -480,7 +458,7 @@ Page({
             return;
         }
         let buyerList = this.data.buyerList.slice();
-        buyerList.push({name: "", phoneNumber: "", idNumber: ""});
+        buyerList.push({name: "", mobile: "", idNumber: ""});
 
         this.setData({buyerList: buyerList});
         this.updateTotalAmount();
@@ -516,7 +494,7 @@ Page({
         let filteredValue = value.replace(/\D/g, '').slice(0, 11);
 
         let buyerList = this.data.buyerList.slice(); // 获取购买人信息列表的副本
-        buyerList[index].phoneNumber = filteredValue; // 更新手机号字段
+        buyerList[index].mobile = filteredValue; // 更新手机号字段
 
         this.setData({
             buyerList: buyerList // 更新购买人信息列表
@@ -576,7 +554,7 @@ Page({
                 this.buyerValidateFailed((index + 1), "有效身份证号");
                 return false;
             }
-            if (buyer.phoneNumber === "" || buyer.phoneNumber.length < 11) {
+            if (buyer.mobile === "" || buyer.mobile.length < 11) {
                 this.buyerValidateFailed((index + 1), "有效手机号");
                 return false;
             }

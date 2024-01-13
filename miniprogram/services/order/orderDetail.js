@@ -1,39 +1,45 @@
-import { config } from '../../config/index';
+import {config} from '../../config/index';
+import {request} from "../_utils/request";
 
 /** 获取订单详情mock数据 */
 function mockFetchOrderDetail(params) {
-  const { delay } = require('../_utils/delay');
-  const { genOrderDetail } = require('../../model/order/orderDetail');
+    const {delay} = require('../_utils/delay');
+    const {genOrderDetail} = require('../../model/order/orderDetail');
 
-  return delay().then(() => genOrderDetail(params));
+    return delay().then(() => genOrderDetail(params));
 }
 
 /** 获取订单详情数据 */
-export function fetchOrderDetail(params) {
-  if (config.useMock) {
-    return mockFetchOrderDetail(params);
-  }
+// export function fetchOrderDetail(params) {
+//   if (config.useMock) {
+//     return mockFetchOrderDetail(params);
+//   }
+//
+//   return new Promise((resolve) => {
+//     resolve('real api');
+//   });
+// }
 
-  return new Promise((resolve) => {
-    resolve('real api');
-  });
+export function fetchOrderDetail(orderId) {
+    let api = "order/detail/" + orderId
+    return request(api, "GET")
 }
 
 /** 获取客服mock数据 */
 function mockFetchBusinessTime(params) {
-  const { delay } = require('../_utils/delay');
-  const { genBusinessTime } = require('../../model/order/orderDetail');
+    const {delay} = require('../_utils/delay');
+    const {genBusinessTime} = require('../../model/order/orderDetail');
 
-  return delay().then(() => genBusinessTime(params));
+    return delay().then(() => genBusinessTime(params));
 }
 
 /** 获取客服数据 */
 export function fetchBusinessTime(params) {
-  if (config.useMock) {
-    return mockFetchBusinessTime(params);
-  }
+    if (config.useMock) {
+        return mockFetchBusinessTime(params);
+    }
 
-  return new Promise((resolve) => {
-    resolve('real api');
-  });
+    return new Promise((resolve) => {
+        resolve('real api');
+    });
 }

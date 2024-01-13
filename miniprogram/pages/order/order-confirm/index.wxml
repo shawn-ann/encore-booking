@@ -97,7 +97,7 @@
                    borderless
                    align="right"
                    t-class="input-com"
-                   value="{{item.phoneNumber}}"
+                   value="{{item.mobile}}"
                    bindchange="handleMobileInput"
                    data-item="name"
                    type=""

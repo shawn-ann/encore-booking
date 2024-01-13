@@ -10,9 +10,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequestMapping("/wx/order")
@@ -42,4 +43,26 @@ public class WxOrderController {
         return ResponseEntity.ok(body);
     }
 
+
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponseBody> list(HttpServletRequest request) throws BaseException {
+
+        String token = request.getHeader("X-Token");
+        Long agentId = JwtUtil.getTokenClaims(token).get("id", Long.class);
+
+        List<HashMap<String, Object>> response = wxOrderService.list(agentId);
+        ApiResponseBody body = new ApiResponseBody(response);
+        return ResponseEntity.ok(body);
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<ApiResponseBody> detail(@PathVariable("id") Long orderId, HttpServletRequest request) throws BaseException {
+
+        String token = request.getHeader("X-Token");
+        Long agentId = JwtUtil.getTokenClaims(token).get("id", Long.class);
+
+        HashMap<String, Object> response = wxOrderService.orderDetail(orderId, agentId);
+        ApiResponseBody body = new ApiResponseBody(response);
+        return ResponseEntity.ok(body);
+    }
 }

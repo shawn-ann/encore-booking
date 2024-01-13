@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Booking extends BaseEntity {
+public class BookingOrder extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,12 +22,17 @@ public class Booking extends BaseEntity {
     @JoinColumn(name = "agent_ticket_quota_id")
     private AgentTicketQuota agentTicketQuota;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<BookingBuyer> buyers;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "agent_id")
+    private Agent agent;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<BookingOperation> operations;
+    @OneToMany(mappedBy = "bookingOrder", cascade = CascadeType.ALL)
+    private List<BookingBuyer> buyerList;
+
+    @OneToMany(mappedBy = "bookingOrder", cascade = CascadeType.ALL)
+    private List<BookingOperation> operationList;
     private int buyCount;
+    private int buyPrice;
     private int totalFee;
 
     @Enumerated(EnumType.STRING)

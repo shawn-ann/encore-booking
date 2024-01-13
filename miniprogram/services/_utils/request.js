@@ -1,4 +1,5 @@
 import {serverUrl} from '../../config/index';
+import Toast from 'tdesign-miniprogram/toast/index';
 
 export function request(api, method, data = "") {
     return new Promise((resolve, reject) => {
@@ -23,11 +24,14 @@ export function request(api, method, data = "") {
                         url: '/pages/login/index'
                     })
                 } else {
-                    wx.showToast({
-                        title: res.data.message,
-                        icon: 'error',
-                        duration: 2000
-                    })
+                    Toast({
+                        context: this,
+                        selector: '#t-toast',
+                        message: res.data.message,
+                        duration: 2000,
+                        theme: 'error',
+                        icon: 'check-circle',
+                    });
                 }
             },
             fail: (error) => {

@@ -1,10 +1,10 @@
 <view class="order-card wr-class" bind:tap="onOrderCardTap">
-<!--	<view class="header header-class">-->
-<!--		<view class="title-class">-->
-<!--			<slot name="top-left" />-->
-<!--		</view>-->
-<!--		<view class="order-status">{{order.statusDesc}}</view>-->
-<!--	</view>-->
+	<view class="header header-class" wx:if="{{showHeader}}">
+		<view class="title-class">
+			<slot name="top-left" />
+		</view>
+		<view class="order-status">{{order.statusDesc}}</view>
+	</view>
 	<view class="slot-wrapper">
 		<slot/>
 	</view>

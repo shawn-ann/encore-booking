@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 public class CreateOrderRequestVO {
     private Long quotaId;
-    private List<OrderBuyerVO> buyers;
+    private List<OrderBuyerVO> buyerList;
 
 }

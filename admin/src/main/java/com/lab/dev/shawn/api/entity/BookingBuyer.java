@@ -17,6 +17,6 @@ public class BookingBuyer extends BaseEntity {
     private String mobile;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Booking order;
+    @JoinColumn(name = "booking_order_id")
+    private BookingOrder bookingOrder;
 }

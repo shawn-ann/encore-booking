@@ -1,7 +1,6 @@
 import { OrderStatus } from '../config';
 import {
-  fetchOrders,
-  fetchOrdersCount,
+  fetchOrders
 } from '../../../services/order/orderList';
 import { cosThumb } from '../../../utils/util';
 
@@ -30,16 +29,14 @@ Page({
   },
 
   onLoad(query) {
-    let status = parseInt(query.status);
-    status = this.data.tabs.map((t) => t.key).includes(status) ? status : -1;
-    this.init(status);
+    this.init();
     this.pullDownRefresh = this.selectComponent('#wr-pull-down-refresh');
   },
 
   onShow() {
-    if (!this.data.backRefresh) return;
-    this.onRefresh();
-    this.setData({ backRefresh: false });
+    // if (!this.data.backRefresh) return;
+    // this.onRefresh();
+    // this.setData({ backRefresh: false });
   },
 
   onReachBottom() {
@@ -66,53 +63,17 @@ Page({
     //   });
   },
 
-  init(status) {
-    status = status !== undefined ? status : this.data.curTab;
-    this.setData({
-      status,
-    });
-    this.refreshList(status);
+  init() {
+    this.getOrderList();
   },
 
-  getOrderList(statusCode = -1, reset = false) {
-    const params = {
-      parameter: {
-        pageSize: this.page.size,
-        pageNum: this.page.num,
-      },
-    };
-    if (statusCode !== -1) params.parameter.orderStatus = statusCode;
+  getOrderList() {
     this.setData({ listLoading: 1 });
-    return fetchOrders(params)
+    return fetchOrders()
       .then((res) => {
-        this.page.num++;
-        let orderList = [];
-        if (res && res.data && res.data.orders) {
-          orderList = (res.data.orders || []).map((order) => {
-
-            return {
-              id: order.orderId,
-              orderNo: order.orderNo,
-              status: order.orderStatus,
-              statusDesc: order.orderStatusName,
-              totalAmount: order.totalAmount,
-              createTime: order.createTime,
-              goods: order.goods,
-              buyerList: order.buyerList,
-              buttons: order.buttonVOs || [],
-              groupInfoVo: order.groupInfoVo,
-            };
-          });
-        }
-        return new Promise((resolve) => {
-          if (reset) {
-            this.setData({ orderList: [] }, () => resolve());
-          } else resolve();
-        }).then(() => {
-          this.setData({
-            orderList: this.data.orderList.concat(orderList),
-            listLoading: orderList.length > 0 ? 0 : 2,
-          });
+        this.setData({
+          orderList: res,
+          listLoading: 0,
         });
       })
       .catch((err) => {
@@ -168,7 +129,7 @@ Page({
   onOrderCardTap(e) {
     const { order } = e.currentTarget.dataset;
     wx.navigateTo({
-      url: `/pages/order/order-detail/index?orderNo=${order.orderNo}`,
+      url: `/pages/order/order-detail/index?orderId=${order.id}`,
     });
   },
 });

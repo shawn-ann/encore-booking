@@ -20,6 +20,8 @@ public enum BaseExceptionEnum {
     SMS_CODE_ALREADY_SEND(40000, "您在一分钟内已经发送过验证码了，请稍后重试！"),
 
     USER_NOT_EXIST(40000, "用户不存在！"),
+
+    CURRENT_USER_CAN_NOT_CREAT_ORDER(50011, "当前用户不允许下单，请联系管理员！"),
     ;
     @Getter
     private int code;

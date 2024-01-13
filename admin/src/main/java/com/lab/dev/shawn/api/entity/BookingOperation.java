@@ -15,11 +15,13 @@ public class BookingOperation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Booking order;
+    @JoinColumn(name = "booking_order_id")
+    private BookingOrder bookingOrder;
 
     @CreatedDate
     private LocalDateTime createDate;

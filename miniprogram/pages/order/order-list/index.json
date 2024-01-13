@@ -11,6 +11,9 @@
     "order-button-bar": "../components/order-button-bar/index",
     "price": "/components/price/index",
     "order-card": "../components/order-card/index",
-    "specs-goods-card": "../components/specs-goods-card/index"
+    "specs-goods-card": "../components/specs-goods-card/index",
+    "t-row": "tdesign-miniprogram/row/row",
+    "t-col": "tdesign-miniprogram/col/col",
+    "t-tag": "tdesign-miniprogram/tag/tag"
   }
 }

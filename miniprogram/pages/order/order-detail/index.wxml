@@ -4,42 +4,50 @@
         <view class="header">
             <view class="order-detail__header">
                 <view class="title">{{order.statusDesc}}</view>
-                <view class="desc">
-                    <block wx:if="{{countDownTime > 0}}">
-                        剩
-                        <t-count-down
-                                time="{{countDownTime}}"
-                                format="HH小时mm分ss秒"
-                                t-class="count-down"
-                                bindfinish="onCountDownFinish"
-                        />
-                        支付，过时订单将会取消
-                    </block>
-                </view>
+<!--                <view class="desc">-->
+<!--                    <block wx:if="{{countDownTime > 0}}">-->
+<!--                        剩-->
+<!--                        <t-count-down-->
+<!--                                time="{{countDownTime}}"-->
+<!--                                format="HH小时mm分ss秒"-->
+<!--                                t-class="count-down"-->
+<!--                                bindfinish="onCountDownFinish"-->
+<!--                        />-->
+<!--                        支付，过时订单将会取消-->
+<!--                    </block>-->
+<!--                </view>-->
             </view>
         </view>
         <!-- 店铺及商品 -->
-        <order-card order="{{order}}" use-top-right-slot>
-            <order-goods-card
-                    goods="{{order.goods}}"
-                    goodsCount="{{order.buyerList.length}}"
-                    no-top-line="{{gIndex === 0}}"
-                    bindtap="onGoodsCardTap"
-                    data-index="{{gIndex}}"
-            >
-            </order-goods-card>
+        <order-card order="{{order}}" use-top-right-slot show-header="{{false}}">
+<!--            <order-goods-card-->
+<!--                    goods="{{order.goods}}"-->
+<!--                    goodsCount="{{order.buyerList.length}}"-->
+<!--                    no-top-line="{{gIndex === 0}}"-->
+<!--                    bindtap="onGoodsCardTap"-->
+<!--                    data-index="{{gIndex}}"-->
+<!--            >-->
+<!--            </order-goods-card>-->
+            <view>
+                <t-row class="block" style="font-size: 30rpx;">
+                    <t-col span="24" t-class="dark">{{order.concertName}}</t-col>
+                </t-row>
+                <t-row class="block">
+                    <t-tag class="margin-16" variant="light" theme="primary">
+                        {{order.sessionName + order.ticketCategoryName + " x " + order.buyCount}}
+                    </t-tag>
+                </t-row>
 
+            </view>
             <view class="pay-detail">
                 <view class="pay-item" wx:for="{{order.buyerList}}" wx:for-item="buyer" wx:for-index="ind" wx:key="id">
                     <text>{{buyer.name}}</text>
-                    <text>{{buyer.phoneNumber}}</text>
+                    <text>{{buyer.mobile}}</text>
                     <text>{{buyer.idNumber}}</text>
-                    <text>{{buyer.ticketNumber}}</text>
                 </view>
                 <view class="pay-item">
-                    <text>共记</text>
-                    <price fill decimalSmaller wr-class="pay-item__right font-bold"
-                           price="{{order.totalAmount || '0'}}"/>
+                    <text>合计</text>
+                    <price fill class="real-pay" price="{{order.totalFee + ''}}" decimalSmaller/>
                 </view>
             </view>
         </order-card>
@@ -47,14 +55,14 @@
             <view class="pay-item">
                 <text>订单编号</text>
                 <view class="pay-item__right" bindtap="onOrderNumCopy">
-                    <text class="order-no">{{order.orderNo}}</text>
-                    <view class="pay-item__right__copy">复制</view>
+                    <text class="order-no">{{order.orderNumber}}</text>
+<!--                    <view class="pay-item__right__copy">复制</view>-->
                 </view>
             </view>
             <view class="pay-item">
                 <text>下单时间</text>
                 <view class="pay-item__right">
-                    <text class="order-no normal-color">{{formatCreateTime}}</text>
+                    <text class="order-no normal-color">{{order.createDate}}</text>
                 </view>
             </view>
             <view class="border-bottom border-bottom-margin"/>

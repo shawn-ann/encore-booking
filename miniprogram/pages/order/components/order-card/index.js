@@ -46,11 +46,10 @@ Component({
     order: {
       type: Object,
       observer(order) {
-        debugger;
         if (!order?.buyerList) return;
-        const goodsCount = order.buyerList.length;
+        const buyCount = order.buyerList.length;
         this.setData({
-          goodsCount,
+          buyCount,
         });
       },
     },
@@ -64,11 +63,15 @@ Component({
       type: Boolean,
       value: false,
     },
+    showHeader: {
+      type: Boolean,
+      value: true,
+    },
   },
 
   data: {
     showAll: true, // 是否展示所有商品，设置为false，可以使用展开更多功能
-    goodsCount: 0,
+    buyCount: 0,
   },
 
   methods: {
