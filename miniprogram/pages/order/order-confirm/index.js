@@ -1,8 +1,9 @@
 import Toast from 'tdesign-miniprogram/toast/index';
 import {fetchTickets} from '../../../services/ticket/fetchTickets';
 import {wechatPayOrder} from './pay';
-import { createOrder } from '../../../services/order/orderConfirm';
+import {createOrder} from '../../../services/order/orderConfirm';
 import {sendVerifyCode, verifyVerifyCode} from '../../../services/verify_code/sendVerifyCode';
+
 const idCard = require('idcard');
 
 const stripeImg = `https://cdn-we-retail.ym.tencent.com/miniapp/order/stripe.png`;
@@ -401,7 +402,7 @@ Page({
             transactionId: orderNumber,
         };
 
-        wechatPayOrder(payOrderInfo).then(res =>{
+        wechatPayOrder(payOrderInfo).then(res => {
             // 支付成功
             wx.redirectTo({url: `/pages/order/pay-result/index`});
         });
@@ -551,7 +552,7 @@ Page({
                 return false;
             }
             debugger;
-            if (buyer.idNumber === "" || !idCard.verify(buyer.idNumber)) {
+            if (buyer.idNumber === "" || buyer.idNumber.length < 18 || !idCard.verify(buyer.idNumber)) {
                 this.buyerValidateFailed((index + 1), "有效身份证号");
                 return false;
             }

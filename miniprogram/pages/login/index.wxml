@@ -1,39 +1,3 @@
-<!--<view>-->
-        <!--    <text>手机号：</text>-->
-        <!--    <input type="number" placeholder="请输入手机号" bindinput="handlePhoneInput" value="{{ phone }}" />-->
-        <!--</view>-->
-        <!--<view>-->
-        <!--    <text>验证码：</text>-->
-        <!--    <input type="number" placeholder="请输入验证码" bindinput="handleCodeInput" value="{{ code }}" />-->
-        <!--    <button wx:if="{{ !isCounting }}" bindtap="sendCode">发送验证码</button>-->
-        <!--    <button wx:if="{{ isCounting }}" disabled>倒计时 {{ countdown }} 秒</button>-->
-        <!--</view>-->
-        <!--<button bindtap="login">登录</button>-->
-
-
-        <!--<view class="container">-->
-        <!--    <view class="form-row">-->
-        <!--        <t-input-->
-        <!--                class="t-input"-->
-        <!--                t-class="field-text"-->
-        <!--                borderless-->
-        <!--                type="number"-->
-        <!--                value="{{phoneNumber}}"-->
-        <!--                maxlength="11"-->
-        <!--                placeholder="手机号"-->
-        <!--                bind:change="onInputValue"-->
-        <!--                data-item="phone"-->
-        <!--        />-->
-        <!--    </view>-->
-        <!--    <view class="form-row">-->
-        <!--        <input class="input" type="number" placeholder="验证码" />-->
-        <!--        <button class="send-button" bindtap="sendVerificationCode">发送验证码</button>-->
-        <!--    </view>-->
-        <!--    <view class="form-row">-->
-        <!--        <button class="login-button" disabled="{{data.smsCode}}">登录</button>-->
-        <!--    </view>-->
-        <!--</view>-->
-
 <view class="address-detail">
     <view class="form-address">
         <form class="form-content">

@@ -11,7 +11,8 @@ Page({
         smsCode: '',         // 验证码
         isCounting: false,  // 是否正在倒计时
         countdown: 60,     // 倒计时时间（秒）
-        submitActive: false, smsCodeActive: true
+        submitActive: false,
+        smsCodeActive: true
     },
 
 
@@ -53,7 +54,7 @@ Page({
             that.setData({
                 isCounting: true, smsCode: smsCode
             });
-
+            that.checkLoginActive()
             let timer = setInterval(function () {
                 let currentCountdown = that.data.countdown;
 
@@ -71,7 +72,7 @@ Page({
         });
 
     }, checkLoginActive() {
-        this.setData({submitActive: this.data.inputSmsCode.length === 4 && this.data.mobile.length === 11});
+        this.setData({submitActive: this.data.smsCode && this.data.inputSmsCode.length === 4 && this.data.mobile.length === 11});
     }, login: function () {
         let mobile = this.data.mobile;
         let inputSmsCode = this.data.inputSmsCode;

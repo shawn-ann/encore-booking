@@ -1,31 +1,25 @@
-import {formatTime} from '../../../utils/util';
-import {OrderStatus, LogisticsIconMap} from '../config';
 import {
-    fetchBusinessTime,
     fetchOrderDetail,
 } from '../../../services/order/orderDetail';
-import Toast from 'tdesign-miniprogram/toast/index';
-import {getAddressPromise} from '../../usercenter/address/list/util';
 
 Page({
     data: {
-        pageLoading: true,
+        enable: false,
+        loadingProps: {
+            size: '50rpx',
+        },
+        scrollTop: 0,
         orderId: undefined,
         order: {}, // 后台返回的原始数据
-        _order: {}, // 内部使用和提供给 order-card 的数据
-        storeDetail: {},
         countDownTime: null,
-        addressEditable: false,
         backRefresh: false, // 用于接收其他页面back时的状态
-        formatCreateTime: '', //格式化订单创建时间
-        logisticsNodes: [],
     },
 
     onLoad(query) {
-        this.orderId = query.orderId;
+        this.setData({
+            orderId: query.orderId,
+        });
         this.init();
-        this.navbar = this.selectComponent('#navbar');
-        this.pullDownRefresh = this.selectComponent('#wr-pull-down-refresh');
     },
 
     onShow() {
@@ -36,7 +30,6 @@ Page({
     },
 
     onPageScroll(e) {
-        this.pullDownRefresh && this.pullDownRefresh.onPageScroll(e);
     },
 
     onImgError(e) {
@@ -47,15 +40,7 @@ Page({
 
     // 页面初始化，会展示pageLoading
     init() {
-        this.setData({pageLoading: true});
-        // this.getStoreDetail();
-        this.getDetail()
-            .then(() => {
-                this.setData({pageLoading: false});
-            })
-            .catch((e) => {
-                console.error(e);
-            });
+        this.getDetail();
     },
 
     // 页面刷新，展示下拉刷新
@@ -69,68 +54,19 @@ Page({
         }
     },
 
-    // 页面刷新，展示下拉刷新
-    onPullDownRefresh_(e) {
-        const {callback} = e.detail;
-        return this.getDetail().then(() => callback && callback());
-    },
-
     getDetail() {
-        return fetchOrderDetail(this.orderId).then((res) => {
+        this.setData({enable: true});
+        return fetchOrderDetail(this.data.orderId).then((res) => {
             let order = res;
             this.setData({
                 order: order,
                 countDownTime: this.computeCountDownTime(order),
-                isPaid: order.status == 'PAID'
+                isPaid: order.status == 'PAID',
+                enable: false
             });
         });
     },
 
-    // 展开物流节点
-    flattenNodes(nodes) {
-        return (nodes || []).reduce((res, node) => {
-            return (node.nodes || []).reduce((res1, subNode, index) => {
-                res1.push({
-                    title: index === 0 ? node.title : '', // 子节点中仅第一个显示title
-                    desc: subNode.status,
-                    date: formatTime(+subNode.timestamp, 'YYYY-MM-DD HH:mm:ss'),
-                    icon: index === 0 ? LogisticsIconMap[node.code] || '' : '', // 子节点中仅第一个显示icon
-                });
-                return res1;
-            }, res);
-        }, []);
-    },
-
-    datermineInvoiceStatus(order) {
-        // 1-已开票
-        // 2-未开票（可补开）
-        // 3-未开票
-        // 4-门店不支持开票
-        return order.invoiceStatus;
-    },
-
-    // 拼接省市区
-    composeAddress(order) {
-        return [
-            //order.logisticsVO.receiverProvince,
-            order.logisticsVO.receiverCity,
-            order.logisticsVO.receiverCountry,
-            order.logisticsVO.receiverArea,
-            order.logisticsVO.receiverAddress,
-        ]
-            .filter((s) => !!s)
-            .join(' ');
-    },
-
-    getStoreDetail() {
-        fetchBusinessTime().then((res) => {
-            const storeDetail = {
-                storeTel: res.data.telphone,
-                storeBusiness: res.data.businessTime.join('\n'),
-            };
-            this.setData({storeDetail});
-        });
-    },
 
     // 仅对待支付状态计算付款倒计时
     // 返回时间若是大于2020.01.01，说明返回的是关闭时间，否则说明返回的直接就是剩余时间
@@ -152,90 +88,4 @@ Page({
         }
     },
 
-    onGoodsCardTap(e) {
-        const {index} = e.currentTarget.dataset;
-        const goods = this.data.order.orderItemVOs[index];
-        wx.navigateTo({url: `/pages/goods/details/index?spuId=${goods.spuId}`});
-    },
-
-    onEditAddressTap() {
-        getAddressPromise()
-            .then((address) => {
-                this.setData({
-                    'order.logisticsVO.receiverName': address.name,
-                    'order.logisticsVO.receiverPhone': address.phone,
-                    '_order.receiverAddress': address.address,
-                });
-            })
-            .catch(() => {
-            });
-
-        wx.navigateTo({
-            url: `/pages/usercenter/address/list/index?selectMode=1`,
-        });
-    },
-
-    onOrderNumCopy() {
-        wx.setClipboardData({
-            data: this.data.order.orderNo,
-        });
-    },
-
-    onDeliveryNumCopy() {
-        wx.setClipboardData({
-            data: this.data.order.logisticsVO.logisticsNo,
-        });
-    },
-
-    onToInvoice() {
-        wx.navigateTo({
-            url: `/pages/order/invoice/index?orderNo=${this.data._order.orderNo}`,
-        });
-    },
-
-    onSuppleMentInvoice() {
-        wx.navigateTo({
-            url: `/pages/order/receipt/index?orderNo=${this.data._order.orderNo}`,
-        });
-    },
-
-    onDeliveryClick() {
-        const logisticsData = {
-            nodes: this.data.logisticsNodes,
-            company: this.data.order.logisticsVO.logisticsCompanyName,
-            logisticsNo: this.data.order.logisticsVO.logisticsNo,
-            phoneNumber: this.data.order.logisticsVO.logisticsCompanyTel,
-        };
-        wx.navigateTo({
-            url: `/pages/order/delivery-detail/index?data=${encodeURIComponent(
-                JSON.stringify(logisticsData),
-            )}`,
-        });
-    },
-
-    /** 跳转订单评价 */
-    navToCommentCreate() {
-        wx.navigateTo({
-            url: `/pages/order/createComment/index?orderNo=${this.orderNo}`,
-        });
-    },
-
-    /** 跳转拼团详情/分享页*/
-    toGrouponDetail() {
-        wx.showToast({title: '点击了拼团'});
-    },
-
-    clickService() {
-        Toast({
-            context: this,
-            selector: '#t-toast',
-            message: '您点击了联系客服',
-        });
-    },
-
-    onOrderInvoiceView() {
-        wx.navigateTo({
-            url: `/pages/order/invoice/index?orderNo=${this.orderNo}`,
-        });
-    },
 });

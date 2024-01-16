@@ -1,4 +1,8 @@
-<t-pull-down-refresh id="t-pull-down-refresh" bindrefresh="onPullDownRefresh_" t-class-indicator="t-class-indicator">
+<t-pull-down-refresh id="t-pull-down-refresh"
+                     value="{{enable}}"
+                     loadingProps="{{loadingProps}}"
+                     bind:refresh="onRefresh"
+                     t-class-indicator="t-class-indicator">
     <!-- 页面内容 -->
     <view class="order-detail">
         <view class="header">
@@ -33,8 +37,8 @@
                     <t-col span="24" t-class="dark">{{order.concertName}}</t-col>
                 </t-row>
                 <t-row class="block">
-                    <t-tag class="margin-16" variant="light" theme="primary">
-                        {{order.sessionName + order.ticketCategoryName + " x " + order.buyCount}}
+                    <t-tag class="margin-16" variant="light" >
+                        {{order.sessionName + " " + order.ticketCategoryName + " x " + order.buyCount}}
                     </t-tag>
                 </t-row>
 

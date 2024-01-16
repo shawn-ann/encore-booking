@@ -7,7 +7,9 @@
             background="#f5f5f5"
             use-loading-slot
             loading-size="60rpx"
-            bindrefresh="onPullDownRefresh_"
+            value="{{enable}}"
+            loadingProps="{{loadingProps}}"
+            bind:refresh="onRefresh"
             t-class-indicator="t-class-indicator"
     >
         <order-card
@@ -30,8 +32,8 @@
                     <t-col span="24">{{order.concertName}}</t-col>
                 </t-row>
                 <t-row class="block">
-                    <t-tag class="margin-16" variant="light" theme="primary">
-                        {{order.sessionName + order.ticketCategoryName + " x " + order.buyCount}}
+                    <t-tag class="margin-16" variant="light">
+                        {{order.sessionName + " " + order.ticketCategoryName + " x " + order.buyCount}}
                     </t-tag>
                 </t-row>
 
@@ -47,8 +49,8 @@
         </order-card>
         <!-- 列表加载中/已全部加载 -->
         <!-- 空态 -->
-        <view class="empty-wrapper" wx:if="{{order.length !== 0}}">
-            <t-empty t-class="t-empty-text" src="{{emptyImg}}">暂无相关订单</t-empty>
+        <view class="empty-wrapper" wx:if="{{ !orderList || orderList.length == 0}}">
+            <t-empty icon="info-circle-filled" description="暂无相关订单" />
         </view>
     </t-pull-down-refresh>
 </view>

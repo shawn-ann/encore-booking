@@ -1,152 +1,159 @@
-<wxs module="order" src="./order.wxs" />
+<wxs module="order" src="./order.wxs"/>
 <form>
-
-<view class="order-sure" wx:if="{{!loading}}">
-  <view class="order-wrapper" >
-    <view class="goods-wrapper">
-<!--      <t-image src="{{goods.thumb}}" t-class="goods-image" mode="aspectFill" />-->
-      <view class="goods-content">
-        <view class="goods-title">{{goods.name}}</view>
-        <view class="goods-title">场次</view>
-        <view class="wrapper">
-          <t-radio-group t-class="horizontal-box" value="场次" bind:change="onChangeSession">
-            <view wx:for="{{goods.sessions}}" wx:key="index" class="card {{selectedSessionIndex == index ? 'card--active' : ''}}">
-              <t-icon wx:if="{{selectedSessionIndex == index}}" name="check" t-class="card__icon" />
-              <t-radio value="{{index}}" label="{{item.name}}" icon="none" borderless />
+    <view class="order-sure" wx:if="{{!loading}}">
+        <view class="order-wrapper">
+            <view class="goods-wrapper">
+                <!--      <t-image src="{{goods.thumb}}" t-class="goods-image" mode="aspectFill" />-->
+                <view class="goods-content">
+                    <view class="goods-title">{{goods.name}}</view>
+                    <view class="goods-title">场次</view>
+                    <view class="wrapper">
+                        <t-radio-group t-class="horizontal-box" value="场次" bind:change="onChangeSession">
+                            <view wx:for="{{goods.sessions}}" wx:key="index"
+                                  class="card {{selectedSessionIndex == index ? 'card--active' : ''}}">
+                                <t-icon wx:if="{{selectedSessionIndex == index}}" name="check" t-class="card__icon"/>
+                                <t-radio value="{{index}}" label="{{item.name}}" icon="none" borderless/>
+                            </view>
+                        </t-radio-group>
+                    </view>
+                    <t-divider/>
+                    <view class="goods-title">票型</view>
+                    <view class="wrapper">
+                        <t-radio-group t-class="horizontal-box" value="场次" bind:change="onChangeTicketCategory">
+                            <view wx:for="{{goods.sessions[selectedSessionIndex].tickets}}" wx:key="index"
+                                  class="card {{selectedTicketIndex == index ? 'card--active' : ''}}">
+                                <t-icon wx:if="{{selectedTicketIndex == index}}" name="check" t-class="card__icon"/>
+                                <t-radio value="{{index}}"
+                                         label="{{item.ticketCategoryName +'(余'+item.remainingQuantity+')'}}"
+                                         icon="none" borderless/>
+                            </view>
+                        </t-radio-group>
+                    </view>
+                </view>
+                <!--      <view class="goods-right">-->
+                <!--        <price wr-class="goods-price" price="{{goods.price}}" fill="{{true}}" decimalSmaller />-->
+                <!--      </view>-->
             </view>
-          </t-radio-group>
         </view>
-        <t-divider />
-        <view class="goods-title">票型</view>
-        <view class="wrapper">
-          <t-radio-group t-class="horizontal-box" value="场次" bind:change="onChangeTicketCategory">
-            <view wx:for="{{goods.sessions[selectedSessionIndex].tickets}}" wx:key="index" class="card {{selectedTicketIndex == index ? 'card--active' : ''}}">
-              <t-icon wx:if="{{selectedTicketIndex == index}}" name="check" t-class="card__icon" />
-              <t-radio value="{{index}}" label="{{item.ticketCategoryName +'(余'+item.remainingQuantity+')'}}" icon="none" borderless />
+        <view class="buyer-card">
+            <view class="buyer-item">
+                <text>购票人</text>
+                <t-icon class="buyer-item__right"
+                        prefix="wr"
+                        name="add"
+                        id="ticket-buyer-add"
+                        catchtap="addBuyer"
+                        size="48rpx"
+                        color="#FA550F"
+                />
             </view>
-          </t-radio-group>
-        </view>
-      </view>
-<!--      <view class="goods-right">-->
-<!--        <price wr-class="goods-price" price="{{goods.price}}" fill="{{true}}" decimalSmaller />-->
-<!--      </view>-->
-    </view>
-  </view>
-  <view class="buyer-card">
-    <view class="buyer-item">
-      <text>购票人</text>
-      <t-icon class="buyer-item__right"
-              prefix="wr"
-              name="add"
-              id="ticket-buyer-add"
-              catchtap="addBuyer"
-              size="48rpx"
-              color="#FA550F"
-      />
-    </view>
-    <view class="buyer-info" wx:for="{{buyerList}}" wx:for-item="item" wx:key="index">
-<!--      <view class="divider-line" />-->
-      <view class="buyer-item">
-        <view class="buyer-item__right">
-          <text>姓名</text>
-          <t-icon data-index="{{index}}"
-                  prefix="wr"
-                  name="delete"
-                  id="ticket-buyer-add"
-                  catchtap="deleteBuyer"
-                  size="38rpx"
-                  color="#FA550F"
-          />
-        </view>
+            <view class="buyer-info" wx:for="{{buyerList}}" wx:for-item="item" wx:key="index">
+                <!--      <view class="divider-line" />-->
+                <view class="buyer-item">
+                    <view class="buyer-item__right">
+                        <text>姓名</text>
+                        <t-icon data-index="{{index}}"
+                                prefix="wr"
+                                name="delete"
+                                id="ticket-buyer-add"
+                                catchtap="deleteBuyer"
+                                size="38rpx"
+                                color="#FA550F"
+                        />
+                    </view>
 
-        <view class="buyer-item__right">
-          <t-input data-index="{{index}}"
-                   slot="right-icon"
-                   borderless
-                   align="right"
-                   t-class="input-com"
-                   value="{{item.name}}"
-                   bindchange="handleNameChange"
-                   data-item="name"
-                   type=""
-                   placeholder="请输入姓名"
-          />
+                    <view class="buyer-item__right">
+                        <t-input data-index="{{index}}"
+                                 slot="right-icon"
+                                 borderless
+                                 align="right"
+                                 t-class="input-com"
+                                 value="{{item.name}}"
+                                 bindchange="handleNameChange"
+                                 data-item="name"
+                                 type=""
+                                 placeholder="请输入姓名"
+                        />
+                    </view>
+                </view>
+                <view class="buyer-item">
+                    <text>身份证号</text>
+                    <view class="buyer-item__right">
+                        <t-input data-index="{{index}}"
+                                 slot="right-icon"
+                                 borderless
+                                 align="right"
+                                 t-class="input-com"
+                                 value="{{item.idNumber}}"
+                                 bindchange="handleIDNumberChange"
+                                 data-item="name"
+                                 type=""
+                                 placeholder="请输入身份证号"
+                        />
+                    </view>
+                </view>
+                <view class="buyer-item">
+                    <text>手机号</text>
+                    <view class="buyer-item__right">
+                        <t-input data-index="{{index}}"
+                                 slot="right-icon"
+                                 borderless
+                                 align="right"
+                                 t-class="input-com"
+                                 value="{{item.mobile}}"
+                                 bindchange="handleMobileInput"
+                                 data-item="name"
+                                 type=""
+                                 placeholder="请输入手机号"
+                        />
+                        <!-- https://tdesign.tencent.com/miniprogram/components/input TODO -->
+                    </view>
+                </view>
+            </view>
         </view>
-      </view>
-      <view class="buyer-item">
-        <text>身份证号</text>
-        <view class="buyer-item__right">
-          <t-input data-index="{{index}}"
-                   slot="right-icon"
-                   borderless
-                   align="right"
-                   t-class="input-com"
-                   value="{{item.idNumber}}"
-                   bindchange="handleIDNumberChange"
-                   data-item="name"
-                   type=""
-                   placeholder="请输入身份证号"
-          />
+        <view class="amount-wrapper">
+            <view class="pay-amount">
+                <text class="order-num">共{{buyerList.length}}人</text>
+            </view>
         </view>
-      </view>
-      <view class="buyer-item">
-        <text>手机号</text>
-        <view class="buyer-item__right">
-          <t-input data-index="{{index}}"
-                   slot="right-icon"
-                   borderless
-                   align="right"
-                   t-class="input-com"
-                   value="{{item.mobile}}"
-                   bindchange="handleMobileInput"
-                   data-item="name"
-                   type=""
-                   placeholder="请输入手机号"
-          />
-          <!-- https://tdesign.tencent.com/miniprogram/components/input TODO -->
+        <view class="wx-pay-cover">
+            <view class="wx-pay">
+                <price decimalSmaller fill class="price" price="{{totalPayAmount || '0'}}"/>
+                <view class="submit-btn" bindtap="confirmOrder">
+                    提交订单
+                </view>
+            </view>
         </view>
-      </view>
+        <!--  <t-dialog t-class="add-notes" title="填写备注信息" visible="{{dialogShow}}" confirm-btn="确认" cancel-btn="取消" t-class-content="add-notes__content" t-class-confirm="dialog__button-confirm" t-class-cancel="dialog__button-cancel" bindconfirm="onNoteConfirm" bindcancel="onNoteCancel">-->
+        <!--    <t-textarea slot="content" focus="{{dialogShow}}" class="notes" t-class="add-notes__textarea" value="{{storeInfoList[storeNoteIndex] && storeInfoList[storeNoteIndex].remark}}" placeholder="备注信息" t-class-textarea="add-notes__textarea__font" bindfocus="onFocus" bindblur="onBlur" bindchange="onInput" maxlength="{{50}}" />-->
+        <!--  </t-dialog>-->
+        <!--  <t-popup placement="bottom" bind:visible-change="onPopupChange">-->
+        <!--    <no-goods slot="content" bind:change="onSureCommit" settleDetailData="{{settleDetailData}}" />-->
+        <!--  </t-popup>-->
+        <select-coupons bind:sure="onCoupons" storeId="{{currentStoreId}}" orderSureCouponList="{{couponList}}"
+                        promotionGoodsList="{{promotionGoodsList}}" couponsShow="{{couponsShow}}"/>
     </view>
-  </view>
-  <view class="amount-wrapper">
-    <view class="pay-amount">
-      <text class="order-num">共{{buyerList.length}}人</text>
-    </view>
-  </view>
-  <view class="wx-pay-cover">
-    <view class="wx-pay">
-      <price decimalSmaller fill class="price" price="{{totalPayAmount || '0'}}" />
-      <view class="submit-btn" bindtap="confirmOrder">
-        提交订单
-      </view>
-    </view>
-  </view>
-<!--  <t-dialog t-class="add-notes" title="填写备注信息" visible="{{dialogShow}}" confirm-btn="确认" cancel-btn="取消" t-class-content="add-notes__content" t-class-confirm="dialog__button-confirm" t-class-cancel="dialog__button-cancel" bindconfirm="onNoteConfirm" bindcancel="onNoteCancel">-->
-<!--    <t-textarea slot="content" focus="{{dialogShow}}" class="notes" t-class="add-notes__textarea" value="{{storeInfoList[storeNoteIndex] && storeInfoList[storeNoteIndex].remark}}" placeholder="备注信息" t-class-textarea="add-notes__textarea__font" bindfocus="onFocus" bindblur="onBlur" bindchange="onInput" maxlength="{{50}}" />-->
-<!--  </t-dialog>-->
-<!--  <t-popup placement="bottom" bind:visible-change="onPopupChange">-->
-<!--    <no-goods slot="content" bind:change="onSureCommit" settleDetailData="{{settleDetailData}}" />-->
-<!--  </t-popup>-->
-  <select-coupons bind:sure="onCoupons" storeId="{{currentStoreId}}" orderSureCouponList="{{couponList}}" promotionGoodsList="{{promotionGoodsList}}" couponsShow="{{couponsShow}}" />
-</view>
-<t-toast id="t-toast" />
-<t-dialog
-        visible="{{dialogVisible}}"
-        t-class-confirm="dialog__button-confirm"
-        t-class-cancel="dialog__button-cancel"
-        title="购票人信息无误"
-        confirm-btn="确定"
-        cancel-btn="取消"
-        bind:confirm="confirmHandle"
-        bind:cancel="cancelHandle"
->
-  <view slot="content" style="display:flex">
-    <view style="flex:1">
-      <t-input class="dialog__input" bindchange="handleSmsCodeInput" value="{{inputSmsCode}}" placeholder="短信验证码" borderless />
-    </view>
-    <view class="send-sms">
-      <view bind:tap="sendSms">发送 <label style="color:grey" wx:if="{{smsCountDown>0}}">({{smsCountDown}})</label></view>
-    </view>
-  </view>
-</t-dialog>
+    <t-toast id="t-toast"/>
+    <t-dialog
+            visible="{{dialogVisible}}"
+            t-class-confirm="dialog__button-confirm"
+            t-class-cancel="dialog__button-cancel"
+            title="购票人信息无误"
+            confirm-btn="确定"
+            cancel-btn="取消"
+            bind:confirm="confirmHandle"
+            bind:cancel="cancelHandle"
+    >
+        <view slot="content" style="display:flex">
+            <view style="flex:1">
+                <t-input class="dialog__input" bindchange="handleSmsCodeInput" value="{{inputSmsCode}}"
+                         placeholder="短信验证码" borderless/>
+            </view>
+            <view class="send-sms">
+                <view bind:tap="sendSms">发送
+                    <label style="color:grey" wx:if="{{smsCountDown>0}}">({{smsCountDown}})</label>
+                </view>
+            </view>
+        </view>
+    </t-dialog>
 </form>
