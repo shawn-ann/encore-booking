@@ -3,6 +3,8 @@ package com.lab.dev.shawn.api.admin.ticketQuota.vo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 public class AgentTicketQuotaRequestVO {
@@ -11,9 +13,9 @@ public class AgentTicketQuotaRequestVO {
     private Long concertId;
     private Long inventoryId;
     private int quantity;
-    private int price;
+    private BigDecimal price;
 
     public int getPrice() {
-        return price * 100;
+        return price.multiply(new BigDecimal(100)).intValue();
     }
 }

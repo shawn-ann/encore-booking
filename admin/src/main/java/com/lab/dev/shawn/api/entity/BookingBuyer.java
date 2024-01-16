@@ -1,5 +1,6 @@
 package com.lab.dev.shawn.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lab.dev.shawn.api.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,5 +19,6 @@ public class BookingBuyer extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_order_id")
+    @JsonIgnore
     private BookingOrder bookingOrder;
 }

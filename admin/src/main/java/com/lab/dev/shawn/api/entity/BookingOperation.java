@@ -1,5 +1,6 @@
 package com.lab.dev.shawn.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lab.dev.shawn.api.base.constant.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class BookingOperation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_order_id")
+    @JsonIgnore
     private BookingOrder bookingOrder;
 
     @CreatedDate
@@ -31,4 +33,7 @@ public class BookingOperation {
         createDate = LocalDateTime.now();
     }
 
+    public String getStatusName(){
+        return status.getName();
+    }
 }

@@ -142,6 +142,24 @@ export const constantRoutes = [
         meta: { title: '配额管理', icon: 'list' }
       }
     ]
+  },
+  {
+    path: '/order',
+    component: Layout,
+    redirect: '/order/list',
+    name: '订单',
+    meta: {
+      title: '订单',
+      icon: 'el-icon-s-help'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/order/list'),
+        name: '订单管理',
+        meta: { title: '订单管理', icon: 'list' }
+      }
+    ]
   }
 ]
 

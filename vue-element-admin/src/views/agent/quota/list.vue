@@ -204,10 +204,14 @@
         </el-form-item>
 
         <el-form-item label="单价(元)" prop="price" label-width="120px">
-          <el-input v-model.number="temp.price" />
+          <template>
+            <el-input-number v-model="temp.price" :precision="2" :step="0.01" :min="0.01" />
+          </template>
         </el-form-item>
         <el-form-item v-if="dialogStatus == 'create'" label="数量" prop="quantity" label-width="120px">
-          <el-input v-model.number="temp.quantity" />
+          <template>
+            <el-input-number v-model="temp.quantity" :step="1" :min="1" />
+          </template>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -229,7 +233,9 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="数量" prop="quantity" required>
-          <el-input v-model.number="stock.quantity" />
+          <template>
+            <el-input-number v-model="stock.quantity" :step="1" :min="1" />
+          </template>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -307,7 +313,8 @@ export default {
           { type: 'number', message: '数量必须为数字值' }],
         price: [
           { required: true, message: '请输入单价' },
-          { type: 'number', message: '单价必须为数字值' }]
+          { type: 'number', message: '单价必须为数字值' }
+        ]
       }
     }
   },
