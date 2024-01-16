@@ -3,6 +3,7 @@ import {fetchTickets} from '../../../services/ticket/fetchTickets';
 import {wechatPayOrder} from './pay';
 import { createOrder } from '../../../services/order/orderConfirm';
 import {sendVerifyCode, verifyVerifyCode} from '../../../services/verify_code/sendVerifyCode';
+const idCard = require('idcard');
 
 const stripeImg = `https://cdn-we-retail.ym.tencent.com/miniapp/order/stripe.png`;
 
@@ -33,7 +34,7 @@ Page({
         promotionGoodsList: [], //当前门店商品列表(优惠券)
         currentStoreId: null, //当前优惠券storeId
         buyerList: [
-            {name: "王XXX", mobile: "13664227822", idNumber: "110133199901017890"},
+            {name: "", mobile: "", idNumber: ""},
         ],
         canPay: false,
         dialogVisible: false,
@@ -56,7 +57,6 @@ Page({
         this.setData({
             loading: true,
         });
-        debugger;
         const {goodsRequest} = this;
         this.handleOptionsParams({goodsRequest});
     },
@@ -447,7 +447,7 @@ Page({
         if (!canAdd) {
             return;
         }
-        if (this.data.buyerList.length > this.data.goods.remainingQuantity) {
+        if (this.data.buyerList.length > this.data.goods.sessions[this.data.selectedSessionIndex].tickets[this.data.selectedTicketIndex].remainingQuantity) {
             Toast({
                 context: this,
                 selector: '#t-toast',
@@ -550,7 +550,8 @@ Page({
                 this.buyerValidateFailed((index + 1), "姓名");
                 return false;
             }
-            if (buyer.idNumber === "" || buyer.idNumber.length < 18) {
+            debugger;
+            if (buyer.idNumber === "" || !idCard.verify(buyer.idNumber)) {
                 this.buyerValidateFailed((index + 1), "有效身份证号");
                 return false;
             }

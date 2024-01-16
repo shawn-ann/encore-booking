@@ -103,6 +103,7 @@
                    type=""
                    placeholder="请输入手机号"
           />
+          <!-- https://tdesign.tencent.com/miniprogram/components/input TODO -->
         </view>
       </view>
     </view>

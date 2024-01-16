@@ -30,7 +30,7 @@
         <!--        <button class="send-button" bindtap="sendVerificationCode">发送验证码</button>-->
         <!--    </view>-->
         <!--    <view class="form-row">-->
-        <!--        <button class="login-button">登录</button>-->
+        <!--        <button class="login-button" disabled="{{data.smsCode}}">登录</button>-->
         <!--    </view>-->
         <!--</view>-->
 
