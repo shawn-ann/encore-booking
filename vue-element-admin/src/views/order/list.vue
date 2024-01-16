@@ -119,7 +119,7 @@
       </el-table-column>
       <el-table-column align="center" label="合计">
         <template slot-scope="scope">
-          <span>{{ scope.row.totalFee }}</span>
+          <span>{{ scope.row.totalFee/100 }}</span>
         </template>
       </el-table-column>
 
