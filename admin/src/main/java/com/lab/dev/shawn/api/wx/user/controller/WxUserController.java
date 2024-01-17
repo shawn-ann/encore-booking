@@ -22,14 +22,16 @@ public class WxUserController {
     @Autowired
     private VerifyCodeService verifyCodeService;
 
-    record UserVO(String mobile, String smsCode) {
+    record UserVO(String mobile, String smsCode, String wxCode) {
     }
 
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponseBody> login(@RequestBody UserVO userVO) throws Exception {
+
         verifyCodeService.verifySmsCode(userVO.mobile, userVO.smsCode, true);
-        Agent agent = wxUserService.login(userVO.mobile);
+
+        Agent agent = wxUserService.login(userVO.mobile, userVO.wxCode);
         String token = JwtUtil.generateToken(agent);
         ApiResponseBody body = new ApiResponseBody(Map.of("token", token, "name", agent.getName(), "mobile", agent.getMobile()));
         return ResponseEntity.ok(body);

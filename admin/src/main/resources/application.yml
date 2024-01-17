@@ -1,12 +1,8 @@
-
 spring:
-  thymeleaf:
-    encoding: UTF-8
+  profiles:
+    active: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.101.10.94:3306/encore_booking?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8
-    username: root
-    password: 123qw///
     hikari:
       connection-timeout: 300000
       connection-test-query: SELECT 1
@@ -19,7 +15,6 @@ spring:
       test-while-idle: true
       validation-query: SELECT 1
   jpa:
-    show-sql: true # 默认false，在日志里显示执行的sql语句
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:

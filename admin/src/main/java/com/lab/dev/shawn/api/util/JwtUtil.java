@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class JwtUtil {
     private final static Key key = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
-    private final static long expirationMs = 86400000; // 令牌过期时间（24小时）
+    private final static long expirationMs = 1 * 60 * 60 * 1000; // 令牌过期时间（24小时）
 
     public static String generateToken(User user) {
         Date now = new Date();

@@ -1,7 +1,6 @@
 import Toast from 'tdesign-miniprogram/toast/index';
 import {loginSubmit} from '../../services/login/login';
 import {sendVerifyCode} from '../../services/verify_code/sendVerifyCode';
-import {fetchGoodsList} from "../../services/good/fetchGoods";
 
 
 Page({
@@ -74,8 +73,6 @@ Page({
     }, checkLoginActive() {
         this.setData({submitActive: this.data.smsCode && this.data.inputSmsCode.length === 4 && this.data.mobile.length === 11});
     }, login: function () {
-        let mobile = this.data.mobile;
-        let inputSmsCode = this.data.inputSmsCode;
 
         // 在这里处理登录逻辑，可以调用后端接口进行验证
         if (this.data.smsCode !== this.data.inputSmsCode) {
@@ -84,7 +81,24 @@ Page({
             });
             return
         }
-        loginSubmit(mobile, inputSmsCode).then(response => {
+        let that = this;
+        wx.login({
+            success(res) {
+                if (res.code) {
+                    let wxCode = res.code
+                    that.handleLoginSubmit(wxCode);
+                } else {
+                    Toast({
+                        context: this, selector: '#t-toast', message: '登录失败！', duration: 2000, icon: '',
+                    });
+                }
+            }
+        })
+    },
+    handleLoginSubmit(wxCode) {
+        let mobile = this.data.mobile;
+        let inputSmsCode = this.data.inputSmsCode;
+        loginSubmit(mobile, inputSmsCode, wxCode).then(response => {
             // 假设登录成功，保存用户信息到本地缓存
             let userInfo = {
                 token: response.token,
@@ -98,7 +112,6 @@ Page({
                 url: '/pages/home/home'
             });
         });
-
-    },
+    }
 
 });

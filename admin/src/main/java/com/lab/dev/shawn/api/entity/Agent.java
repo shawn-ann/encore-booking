@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class Agent extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +16,7 @@ public class Agent extends BaseEntity {
 
     private String name;
     private String mobile;
+    private String openId;
 
     @Enumerated(EnumType.STRING)
     private BaseStatus status;

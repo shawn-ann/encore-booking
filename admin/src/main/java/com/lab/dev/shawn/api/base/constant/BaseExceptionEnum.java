@@ -11,8 +11,8 @@ public enum BaseExceptionEnum {
     CREATE_FAILED(50005, "创建失败，请稍后重试！"),
     DUPLICATED_RECORD(50006, "已存在该记录！"),
     UNALLOCATED_QUANTITY_NOT_ENOUGTH(50008, "未分配数量不足！"),
-    MOBILE_ALREADY_EXIST(50009,"手机号已存在！"),
-    INSUFFICIENT_STOCK(50010,"库存不足，请刷新重试！"),
+    MOBILE_ALREADY_EXIST(50009, "手机号已存在！"),
+    INSUFFICIENT_STOCK(50010, "库存不足，请刷新重试！"),
     OPERATION_FAILED(50011, "操作失败，请稍后重试！"),
 
 
@@ -22,6 +22,9 @@ public enum BaseExceptionEnum {
     USER_NOT_EXIST(40000, "用户不存在！"),
 
     CURRENT_USER_CAN_NOT_CREAT_ORDER(50011, "当前用户不允许下单，请联系管理员！"),
+
+    RETRIEVE_OPENID_FAILED(5003, "获取OPENID失败！"),
+    CALL_THIRD_PARTY_API_ERROR(5003, "调用第三方接口异常！"),
     ;
     @Getter
     private int code;

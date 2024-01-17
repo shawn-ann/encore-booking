@@ -1,6 +1,6 @@
 import {request} from '../_utils/request';
 
-export function loginSubmit(mobile, smsCode) {
+export function loginSubmit(mobile, smsCode, wxCode) {
     let api = "user/login"
-    return request(api, "POST", {mobile: mobile, smsCode: smsCode})
+    return request(api, "POST", {mobile: mobile, smsCode: smsCode, wxCode: wxCode})
 }

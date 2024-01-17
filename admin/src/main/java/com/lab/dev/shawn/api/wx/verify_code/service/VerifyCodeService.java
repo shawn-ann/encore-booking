@@ -2,6 +2,7 @@ package com.lab.dev.shawn.api.wx.verify_code.service;
 
 import com.lab.dev.shawn.api.base.constant.BaseExceptionEnum;
 import com.lab.dev.shawn.api.base.exception.BaseException;
+import com.lab.dev.shawn.api.config.MyAppConfig;
 import com.lab.dev.shawn.api.entity.Agent;
 import com.lab.dev.shawn.api.entity.VerifyCode;
 import com.lab.dev.shawn.api.repository.AgentRepository;
@@ -17,6 +18,8 @@ import java.util.Random;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class VerifyCodeService {
+    @Autowired
+    private MyAppConfig appConfig;
     @Autowired
     private VerifyCodeRepository verifyCodeRepository;
     @Autowired
@@ -41,8 +44,9 @@ public class VerifyCodeService {
         verifyCode.setCode(code);
         verifyCode.setLogin(isLogin);
         verifyCodeRepository.save(verifyCode);
-
-        SendSmsUtil.send(mobile, code);
+        if (!appConfig.isMockSendSms()) {
+            SendSmsUtil.send(mobile, code);
+        }
         return code;
     }
 
