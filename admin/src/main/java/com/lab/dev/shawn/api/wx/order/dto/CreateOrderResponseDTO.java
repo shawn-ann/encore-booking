@@ -7,4 +7,5 @@ public class CreateOrderResponseDTO {
     private Long orderId;
     private String orderNumber;
     private int totalFee;
+    private String payInfo = "";
 }

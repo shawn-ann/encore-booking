@@ -9,7 +9,13 @@ import org.springframework.stereotype.Component;
 @Data
 public class MyAppConfig {
     private boolean isMockSendSms;
-    private String appId;
+    private boolean isMockPay;
+
+    private String appid;
     private String appSecret;
-    private String mchntCd;
+    private String fuiouMchntCd;
+    private String fuiouPriKey;
+    private String fuiouPubKey;
+    private int orderPayTimeout;
+    private String backendPayNotifyUrl;
 }

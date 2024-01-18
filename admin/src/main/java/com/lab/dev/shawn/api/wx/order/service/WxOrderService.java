@@ -1,14 +1,22 @@
 package com.lab.dev.shawn.api.wx.order.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lab.dev.shawn.api.base.constant.BaseExceptionEnum;
 import com.lab.dev.shawn.api.base.constant.BaseStatus;
+import com.lab.dev.shawn.api.base.constant.OperationStatus;
 import com.lab.dev.shawn.api.base.constant.OrderStatus;
 import com.lab.dev.shawn.api.base.exception.BaseException;
+import com.lab.dev.shawn.api.component.FuiouPayApiComponent;
+import com.lab.dev.shawn.api.component.entity.FuiouPayNotifyRequestBody;
+import com.lab.dev.shawn.api.component.entity.FuiouPayRequestBody;
+import com.lab.dev.shawn.api.component.entity.FuiouPayResponseBody;
+import com.lab.dev.shawn.api.config.MyAppConfig;
 import com.lab.dev.shawn.api.entity.*;
 import com.lab.dev.shawn.api.repository.AgentRepository;
 import com.lab.dev.shawn.api.repository.AgentTicketQuotaRepository;
-import com.lab.dev.shawn.api.repository.InventoryRepository;
 import com.lab.dev.shawn.api.repository.BookingOrderRepository;
+import com.lab.dev.shawn.api.repository.InventoryRepository;
 import com.lab.dev.shawn.api.wx.order.dto.CreateOrderResponseDTO;
 import com.lab.dev.shawn.api.wx.order.vo.CreateOrderRequestVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,8 +44,12 @@ public class WxOrderService {
     private BookingOrderRepository bookingOrderRepository;
     @Autowired
     private InventoryRepository inventoryRepository;
+    @Autowired
+    private FuiouPayApiComponent fuiouPayApiComponent;
+    @Autowired
+    private MyAppConfig myAppConfig;
 
-    public CreateOrderResponseDTO create(CreateOrderRequestVO requestVO, Long agentId) throws BaseException {
+    public CreateOrderResponseDTO create(CreateOrderRequestVO requestVO, Long agentId) throws Exception {
         int buyerCount = requestVO.getBuyerList().size();
         //查询配额
         AgentTicketQuota agentTicketQuota = agentTicketQuotaRepository.findById(requestVO.getQuotaId()).get();
@@ -84,7 +99,7 @@ public class WxOrderService {
 
         ArrayList<BookingOperation> operations = new ArrayList<>();
         BookingOperation operation = new BookingOperation();
-        operation.setStatus(OrderStatus.CREATED);
+        operation.setStatus(OperationStatus.CREATE_ORDER);
         operation.setBookingOrder(order);
         operations.add(operation);
         order.setOperationList(operations);
@@ -95,6 +110,18 @@ public class WxOrderService {
         response.setOrderId(order.getId());
         response.setOrderNumber(order.getOrderNumber());
         response.setTotalFee(order.getTotalFee());
+
+        if (!myAppConfig.isMockPay()) {
+            FuiouPayRequestBody requestBody = new FuiouPayRequestBody();
+            String goodsName = order.getConcertName() + order.getSessionName() + order.getTicketCategoryName();
+            requestBody.setOrder_id(order.getOrderNumber());
+            requestBody.setOpenid(agent.getOpenId());
+            requestBody.setOrder_amt(order.getTotalFee());
+            requestBody.setGoods_name(goodsName);
+            requestBody.setGoods_detail(goodsName);
+            FuiouPayResponseBody fuiouPayResponseBody = fuiouPayApiComponent.pay(requestBody);
+            response.setPayInfo(fuiouPayResponseBody.getOrder_info());
+        }
         return response;
     }
 
@@ -145,5 +172,54 @@ public class WxOrderService {
             throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
         }
         return convertBookingOrderToMap(bookingOrder);
+    }
+
+    public void pay(String requestBody) throws BaseException, JsonProcessingException {
+        FuiouPayNotifyRequestBody body = fuiouPayApiComponent.parseNotifyMessage(requestBody);
+
+        String orderNumber = body.getFy_order_id();
+        boolean paySuccess = body.getOrder_st().equals("1");
+        BookingOrder bookingOrder = bookingOrderRepository.findByOrderNumber(orderNumber);
+        if (bookingOrder == null) {
+            throw new BaseException(BaseExceptionEnum.ORDER_NOT_EXIST);
+        }
+        if (!bookingOrder.getStatus().equals(OrderStatus.CREATED)) {
+            System.out.println("订单【 " + orderNumber + "】不可以支付！");
+            throw new BaseException(BaseExceptionEnum.ORDER_STATUS_CANNOT_PAY);
+        }
+
+        BookingOperation operation = new BookingOperation();
+        operation.setBookingOrder(bookingOrder);
+        operation.setNote("富友订单号:" + body.getFy_order_id() + ",富友流水号:" + body.getOrder_fas_ssn());
+        operation.setAdditionalInfo(new ObjectMapper().writer().writeValueAsString(body));
+        if (paySuccess) {
+            bookingOrder.setStatus(OrderStatus.PAID);
+            operation.setStatus(OperationStatus.PAY_SUCCESS);
+        } else {
+            // TODO 支付失败
+            operation.setStatus(OperationStatus.PAY_FAILED);
+        }
+
+        List<BookingOperation> operationList = bookingOrder.getOperationList();
+        operationList.add(operation);
+
+        bookingOrderRepository.save(bookingOrder);
+    }
+
+    public void cancel(Long orderId, Long agentId) throws BaseException {
+        BookingOrder order = bookingOrderRepository.findByID(orderId);
+        if (!order.getAgent().getId().equals(agentId)) {
+            throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
+        }
+        if (!order.getStatus().equals(OrderStatus.CREATED)) {
+            throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
+        }
+        order.setStatus(OrderStatus.CREATED);
+        BookingOperation operation = new BookingOperation();
+        operation.setStatus(OperationStatus.CANCEL_ORDER);
+        operation.setBookingOrder(order);
+
+        order.getOperationList().add(operation);
+        bookingOrderRepository.save(order);
     }
 }

@@ -7,7 +7,7 @@ import com.lab.dev.shawn.api.entity.Agent;
 import com.lab.dev.shawn.api.entity.VerifyCode;
 import com.lab.dev.shawn.api.repository.AgentRepository;
 import com.lab.dev.shawn.api.repository.VerifyCodeRepository;
-import com.lab.dev.shawn.api.util.SendSmsUtil;
+import com.lab.dev.shawn.api.component.SendSmsComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +45,7 @@ public class VerifyCodeService {
         verifyCode.setLogin(isLogin);
         verifyCodeRepository.save(verifyCode);
         if (!appConfig.isMockSendSms()) {
-            SendSmsUtil.send(mobile, code);
+            SendSmsComponent.send(mobile, code);
         }
         return code;
     }

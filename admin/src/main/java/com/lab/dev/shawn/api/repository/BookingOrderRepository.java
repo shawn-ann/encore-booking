@@ -41,4 +41,12 @@ public interface BookingOrderRepository extends JpaRepository<BookingOrder, Long
             where a.id = :id 
             """)
     BookingOrder findByID(Long id);
+
+    @Query("""
+            Select 
+            a
+            from BookingOrder a 
+            where a.orderNumber = :orderNumber 
+            """)
+    BookingOrder findByOrderNumber(String orderNumber);
 }

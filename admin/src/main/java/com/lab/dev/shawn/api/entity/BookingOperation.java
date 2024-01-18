@@ -1,7 +1,7 @@
 package com.lab.dev.shawn.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.lab.dev.shawn.api.base.constant.OrderStatus;
+import com.lab.dev.shawn.api.base.constant.OperationStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +18,7 @@ public class BookingOperation {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OperationStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_order_id")
@@ -27,13 +27,15 @@ public class BookingOperation {
 
     @CreatedDate
     private LocalDateTime createDate;
+    private String note;
+    private String additionalInfo;
 
     @PrePersist
     protected void onCreate() {
         createDate = LocalDateTime.now();
     }
 
-    public String getStatusName(){
+    public String getStatusName() {
         return status.getName();
     }
 }

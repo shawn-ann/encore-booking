@@ -4,6 +4,7 @@ import lombok.Getter;
 
 public enum BaseExceptionEnum {
     INCORRECT_USER_CREDENTIAL(50000, "用户名或密码错误！"),
+    SYSTEM_ERROR(50000, "系统错误！"),
     NOT_LOGIN(50001, "未登录！"),
     NOT_FOUND_MATCH_RECORD(50002, "未找到匹配记录！"),
     NOT_ALLOWED_OPERATION(5003, "操作不允许！"),
@@ -25,6 +26,8 @@ public enum BaseExceptionEnum {
 
     RETRIEVE_OPENID_FAILED(5003, "获取OPENID失败！"),
     CALL_THIRD_PARTY_API_ERROR(5003, "调用第三方接口异常！"),
+    ORDER_STATUS_CANNOT_PAY(5003, "当前订单状态不可以支付！"),
+    ORDER_NOT_EXIST(5003, "订单不存在！"),
     ;
     @Getter
     private int code;

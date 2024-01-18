@@ -44,7 +44,6 @@ public class BookingOrder extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-
     public String getStatusName(){
         return status.getName();
     }

@@ -22,7 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new AdminAuthInterceptor()).excludePathPatterns(List.of("/admin/user/login", "/admin/user/logout", "/error", "/404"))
                 .addPathPatterns("/admin/**"); // 匹配所有路径
 
-        registry.addInterceptor(new WxAuthInterceptor()).excludePathPatterns(List.of("/wx/user/login", "/wx/verify/code/send", "/wx/verify/code/verify"))
+        registry.addInterceptor(new WxAuthInterceptor()).excludePathPatterns(List.of("/wx/user/login", "/wx/verify/code/send", "/wx/verify/code/verify", "/wx/order/pay_notify"))
                 .addPathPatterns("/wx/**"); // 匹配所有路径
     }
 

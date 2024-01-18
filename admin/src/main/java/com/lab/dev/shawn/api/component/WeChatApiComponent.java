@@ -1,10 +1,10 @@
-package com.lab.dev.shawn.api.util;
+package com.lab.dev.shawn.api.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lab.dev.shawn.api.base.constant.BaseExceptionEnum;
 import com.lab.dev.shawn.api.base.exception.BaseException;
 import com.lab.dev.shawn.api.config.MyAppConfig;
-import com.lab.dev.shawn.api.util.entity.WxOpenIdApiResponse;
+import com.lab.dev.shawn.api.component.entity.WxOpenIdApiResponse;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,14 +15,14 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 @Component
-public class WeChatApiUtil {
+public class WeChatApiComponent {
     @Autowired
     private MyAppConfig myAppConfig;
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String WECHAT_API_URL = "https://api.weixin.qq.com/sns/jscode2session";
 
     public String retrieveOpenId(String wxCode) throws Exception {
-        String appId = myAppConfig.getAppId();
+        String appId = myAppConfig.getAppid();
         String appSecret = myAppConfig.getAppSecret();
         // 构建请求 URL
         String url = WECHAT_API_URL + "?appid=" + appId + "&secret=" + appSecret + "&js_code=" + wxCode + "&grant_type=authorization_code";

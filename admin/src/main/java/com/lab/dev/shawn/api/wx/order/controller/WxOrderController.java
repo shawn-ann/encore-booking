@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class WxOrderController {
     private WxOrderService wxOrderService;
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponseBody> create(@RequestBody CreateOrderRequestVO requestVO, HttpServletRequest request) throws BaseException {
+    public ResponseEntity<ApiResponseBody> create(@RequestBody CreateOrderRequestVO requestVO, HttpServletRequest request) throws Exception {
 
         String token = request.getHeader("X-Token");
         Long agentId = JwtUtil.getTokenClaims(token).get("id", Long.class);
@@ -33,16 +36,32 @@ public class WxOrderController {
         return ResponseEntity.ok(body);
     }
 
-    @PostMapping("/pay")
-    public ResponseEntity<ApiResponseBody> pay(@RequestBody String orderId, HttpServletRequest request) throws BaseException {
+    @PostMapping("/cancel")
+    public ResponseEntity<ApiResponseBody> cancel(@RequestBody Long orderId, HttpServletRequest request) throws BaseException {
 
         String token = request.getHeader("X-Token");
         Long agentId = JwtUtil.getTokenClaims(token).get("id", Long.class);
 
-        ApiResponseBody body = new ApiResponseBody(null);
+        wxOrderService.cancel(orderId, agentId);
+        ApiResponseBody body = new ApiResponseBody("success");
         return ResponseEntity.ok(body);
     }
 
+    @PostMapping("/pay_notify")
+    public ResponseEntity<ApiResponseBody> payNotify(HttpServletRequest request) throws BaseException, IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));) {
+            StringBuilder body = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                body.append(line);
+            }
+            // 处理请求体数据
+            wxOrderService.pay(body.toString());
+        }
+
+        ApiResponseBody body = new ApiResponseBody(null);
+        return ResponseEntity.ok(body);
+    }
 
     @GetMapping("/list")
     public ResponseEntity<ApiResponseBody> list(HttpServletRequest request) throws BaseException {

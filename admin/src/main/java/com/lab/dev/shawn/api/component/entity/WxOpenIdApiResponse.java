@@ -1,4 +1,4 @@
-package com.lab.dev.shawn.api.util.entity;
+package com.lab.dev.shawn.api.component.entity;
 
 import lombok.Data;
 
