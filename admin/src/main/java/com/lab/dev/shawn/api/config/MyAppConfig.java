@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "myapp")
 @Data
 public class MyAppConfig {
-    private boolean isMockSendSms;
-    private boolean isMockPay;
+    private boolean mockSendSms;
+    private boolean mockPay;
 
     private String appid;
     private String appSecret;
@@ -18,4 +18,9 @@ public class MyAppConfig {
     private String fuiouPubKey;
     private int orderPayTimeout;
     private String backendPayNotifyUrl;
+
+    private String aliyunAccessKeyId;
+    private String aliyunAccessKeySecret;
+    private String aliyunSmsSignName;
+    private String aliyunSmsTemplateCode;
 }

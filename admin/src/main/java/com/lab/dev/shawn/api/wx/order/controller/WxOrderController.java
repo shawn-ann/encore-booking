@@ -56,7 +56,7 @@ public class WxOrderController {
                 body.append(line);
             }
             // 处理请求体数据
-            wxOrderService.pay(body.toString());
+            wxOrderService.payNotify(body.toString());
         }
 
         ApiResponseBody body = new ApiResponseBody(null);

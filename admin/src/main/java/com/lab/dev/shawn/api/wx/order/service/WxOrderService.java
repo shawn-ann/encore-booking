@@ -174,7 +174,7 @@ public class WxOrderService {
         return convertBookingOrderToMap(bookingOrder);
     }
 
-    public void pay(String requestBody) throws BaseException, JsonProcessingException {
+    public void payNotify(String requestBody) throws BaseException, JsonProcessingException {
         FuiouPayNotifyRequestBody body = fuiouPayApiComponent.parseNotifyMessage(requestBody);
 
         String orderNumber = body.getFy_order_id();

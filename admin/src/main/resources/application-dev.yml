@@ -8,8 +8,8 @@ spring:
     show-sql: true # 默认false，在日志里显示执行的sql语句
 
 myapp:
-  isMockSendSms: true
-  isMockPay: true
+  mockPay: true
+  mockSendSms: true
   appId: "wxe7738fe5d2b11017"
   appSecret: "a73dfa22687eb6cbeed8db105aa03188"
   fuiouMchntCd: "0001000F0040992"
@@ -17,3 +17,9 @@ myapp:
   fuiouPubKey: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKPD4f/3xMjPuHcQSGxPIYZNgF2i0sJhzmKpN3dmzhbKH/1nG+aXUJDhswyitzrI+U0ic/GL/IWB1wQ3noWuLFr8jDSGafenTFiY9c0H9ZAEfqW/oywx95G5JWu5y/ffp4yCmlt8k5kHO/4kE1qnJcGaQlb6/+7t3MPSV5ybmBZwIDAQAB"
   orderPayTimeout: 120
   backend_pay_notify_url: ""
+  aliyunAccessKeyId: "LTAI5tRRKDY1TjS7UZCCW6TJ"
+  aliyunAccessKeySecret: "hmmsadU6xPk1Xd4hGm5Q9ZqRGyUrEp"
+  aliyunSmsSignName: "糊涂实验室"
+  aliyunSmsTemplateCode: "SMS_464760823"
+#  aliyunSmsSignName: "阿里云短信测试"
+#  aliyunSmsTemplateCode: "SMS_154950909"

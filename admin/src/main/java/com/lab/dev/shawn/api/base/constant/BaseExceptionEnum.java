@@ -15,6 +15,7 @@ public enum BaseExceptionEnum {
     MOBILE_ALREADY_EXIST(50009, "手机号已存在！"),
     INSUFFICIENT_STOCK(50010, "库存不足，请刷新重试！"),
     OPERATION_FAILED(50011, "操作失败，请稍后重试！"),
+    SENDSMS_FAILED(50011, "发送验证码失败，请稍后重试！"),
 
 
     SMS_CODE_INCORRECT(40000, "验证码错误！"),
