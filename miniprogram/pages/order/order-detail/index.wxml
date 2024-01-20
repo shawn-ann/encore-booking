@@ -72,7 +72,7 @@
             <view class="border-bottom border-bottom-margin"/>
         </view>
     </view>
-    <view wx:if="{{order.buttons.length > 0}}" class="bottom-bar">
+    <view wx:if="{{order.status == 'CREATED'}}" class="bottom-bar">
         <order-button-bar order="{{order}}" bindrefresh="onRefresh" isBtnMax/>
     </view>
 </t-pull-down-refresh>

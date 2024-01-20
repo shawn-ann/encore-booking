@@ -1,45 +1,18 @@
 import {config} from '../../config/index';
 import {request} from "../_utils/request";
 
-/** 获取订单详情mock数据 */
-function mockFetchOrderDetail(params) {
-    const {delay} = require('../_utils/delay');
-    const {genOrderDetail} = require('../../model/order/orderDetail');
-
-    return delay().then(() => genOrderDetail(params));
-}
-
 /** 获取订单详情数据 */
-// export function fetchOrderDetail(params) {
-//   if (config.useMock) {
-//     return mockFetchOrderDetail(params);
-//   }
-//
-//   return new Promise((resolve) => {
-//     resolve('real api');
-//   });
-// }
-
 export function fetchOrderDetail(orderId) {
     let api = "order/detail/" + orderId
     return request(api, "GET")
 }
 
-/** 获取客服mock数据 */
-function mockFetchBusinessTime(params) {
-    const {delay} = require('../_utils/delay');
-    const {genBusinessTime} = require('../../model/order/orderDetail');
-
-    return delay().then(() => genBusinessTime(params));
+export function cancelOrder(orderId) {
+    let api = "order/cancel/" + orderId
+    return request(api, "POST",)
 }
 
-/** 获取客服数据 */
-export function fetchBusinessTime(params) {
-    if (config.useMock) {
-        return mockFetchBusinessTime(params);
-    }
-
-    return new Promise((resolve) => {
-        resolve('real api');
-    });
+export function applyRefund(orderId) {
+    let api = "order/refund/" + orderId
+    return request(api, "POST",)
 }

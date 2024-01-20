@@ -36,13 +36,13 @@ public class WxOrderController {
         return ResponseEntity.ok(body);
     }
 
-    @PostMapping("/cancel")
-    public ResponseEntity<ApiResponseBody> cancel(@RequestBody Long orderId, HttpServletRequest request) throws BaseException {
+    @PostMapping("/cancel/{id}")
+    public ResponseEntity<ApiResponseBody> cancel(@PathVariable Long id, HttpServletRequest request) throws BaseException {
 
         String token = request.getHeader("X-Token");
         Long agentId = JwtUtil.getTokenClaims(token).get("id", Long.class);
 
-        wxOrderService.cancel(orderId, agentId);
+        wxOrderService.cancel(id, agentId);
         ApiResponseBody body = new ApiResponseBody("success");
         return ResponseEntity.ok(body);
     }

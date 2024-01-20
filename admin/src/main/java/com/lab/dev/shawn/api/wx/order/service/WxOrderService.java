@@ -214,12 +214,29 @@ public class WxOrderService {
         if (!order.getStatus().equals(OrderStatus.CREATED)) {
             throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
         }
-        order.setStatus(OrderStatus.CREATED);
+
+        recoverStock(order);
+
+        order.setStatus(OrderStatus.CANCEL);
         BookingOperation operation = new BookingOperation();
         operation.setStatus(OperationStatus.CANCEL_ORDER);
         operation.setBookingOrder(order);
 
         order.getOperationList().add(operation);
         bookingOrderRepository.save(order);
+    }
+
+    private void recoverStock(BookingOrder order) throws BaseException {
+        int quantity = order.getBuyCount();
+        AgentTicketQuota agentTicketQuota = order.getAgentTicketQuota();
+        Inventory inventory = agentTicketQuota.getInventory();
+        int affectCounts = agentTicketQuotaRepository.addRemainingQuantity(agentTicketQuota.getId(), quantity);
+        if (affectCounts != 1) {
+            throw new BaseException(BaseExceptionEnum.OPERATION_FAILED);
+        }
+        affectCounts = inventoryRepository.addRemainingQuantity(inventory.getId(), quantity);
+        if (affectCounts != 1) {
+            throw new BaseException(BaseExceptionEnum.OPERATION_FAILED);
+        }
     }
 }
