@@ -1,5 +1,6 @@
 package com.lab.dev.shawn.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lab.dev.shawn.api.base.constant.BaseStatus;
 import com.lab.dev.shawn.api.base.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -26,6 +27,12 @@ public class Concert extends BaseEntity {
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
     @Where(clause = "is_deleted = false")
     private List<TicketCategory> ticketCategoryList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
+    @Where(clause = "is_deleted = false and status = 'ACTIVE' ")
+    @OrderBy("id desc")
+    private List<Inventory> inventoryList;
 
     @Enumerated(EnumType.STRING)
     private BaseStatus status;

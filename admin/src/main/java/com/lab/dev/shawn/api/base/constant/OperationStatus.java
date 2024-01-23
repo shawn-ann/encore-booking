@@ -7,9 +7,9 @@ public enum OperationStatus {
     CREATE_ORDER("创建订单"),
     PAY_SUCCESS("支付成功"),
     PAY_FAILED("支付失败"),
-    REFUNDING(""),
-    REFUND_SUCCESS(""),
-    REFUND_FAILED("");
+    APPLY_REFUND("申请退款"),
+    REFUND_SUCCESS("退款成功"),
+    REFUND_FAILED("退款失败");
     @Getter
     private String name;
 

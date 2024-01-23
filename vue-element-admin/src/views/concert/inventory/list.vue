@@ -1,19 +1,6 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select
-        v-model="listQuery.concertId"
-        filterable
-        placeholder="请选择"
-        class="filter-item"
-      >
-        <el-option
-          v-for="item in concertDropdownOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
@@ -61,54 +48,55 @@
 
       <el-table-column align="center" label="剩余库存" width="180">
         <template slot-scope="scope">
-          <el-button
-            v-if="scope.row.status == 'INACTIVE'"
-            type="primary"
-            size="mini"
-            icon="el-icon-plus"
-            @click="handleQuantityUpdate(scope.row.id,'ADD')"
-          />
           <el-tag>
             <span>{{ scope.row.remainingQuantity }} </span>
           </el-tag>
-          <el-button
-            v-if="scope.row.status == 'INACTIVE'"
-            type="primary"
-            size="mini"
-            icon="el-icon-minus"
-            @click="handleQuantityUpdate(scope.row.id,'MINUS')"
-          />
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="状态">
-        <template slot-scope="scope">
-          <el-tag>
-            <span>{{ scope.row.status | statusFilter }}</span>
-          </el-tag>
-        </template>
-      </el-table-column>
+      <!--      <el-table-column align="center" label="状态">-->
+      <!--        <template slot-scope="scope">-->
+      <!--          <el-tag>-->
+      <!--            <span>{{ scope.row.status | statusFilter }}</span>-->
+      <!--          </el-tag>-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
 
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.status == 'ACTIVE'" type="info" size="mini" @click="inactive(scope.row.id)">
-            下架
-          </el-button>
+          <!--          <el-button v-if="scope.row.status == 'ACTIVE'" type="info" size="mini" @click="inactive(scope.row.id)">-->
+          <!--            下架-->
+          <!--          </el-button>-->
+          <!--          <el-button-->
+          <!--            v-if="scope.row.status == 'INACTIVE'"-->
+          <!--            type="success"-->
+          <!--            size="mini"-->
+          <!--            @click="active(scope.row.id)"-->
+          <!--          >-->
+          <!--            上架-->
+          <!--          </el-button>-->
+          <!--          <el-button-->
+          <!--            v-if="scope.row.status == 'INACTIVE'"-->
+          <!--            size="mini"-->
+          <!--            type="danger"-->
+          <!--            @click="handleDelete(scope.row.id,$index)"-->
+          <!--          >-->
+          <!--            删除-->
+          <!--          </el-button>-->
+
           <el-button
-            v-if="scope.row.status == 'INACTIVE'"
-            type="success"
             size="mini"
-            @click="active(scope.row.id)"
+            type="primary"
+            @click="handleQuantityUpdate(scope.row.id,'ADD')"
           >
-            上架
+            添加库存
           </el-button>
           <el-button
-            v-if="scope.row.status == 'INACTIVE'"
             size="mini"
             type="danger"
-            @click="handleDelete(scope.row.id,$index)"
+            @click="handleQuantityUpdate(scope.row.id,'MINUS')"
           >
-            删除
+            减少库存
           </el-button>
         </template>
       </el-table-column>
@@ -201,7 +189,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="数量" prop="quantity" required>
-          <el-input v-model.number="stock.quantity" />
+          <el-input-number v-model="stock.quantity" :min="1" @change="handleChange" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -280,7 +268,8 @@ export default {
     }
   },
   created() {
-    this.initDropdown()
+    const concertId = this.$route.params && this.$route.params.concertId
+    this.listQuery.concertId = concertId
     this.getList()
   },
   methods: {
@@ -364,7 +353,7 @@ export default {
       this.stock = {
         id: id,
         operation: opt,
-        quantity: undefined
+        quantity: 0
       }
       this.stockDialogFormVisible = true
       this.$nextTick(() => {

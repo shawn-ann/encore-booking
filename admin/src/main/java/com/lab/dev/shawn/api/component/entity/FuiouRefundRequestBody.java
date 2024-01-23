@@ -11,5 +11,5 @@ public class FuiouRefundRequestBody {
     private String refund_order_date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     private String pay_order_date;
     private String pay_order_id;
-    private String refund_amt;
+    private int refund_amt;
 }

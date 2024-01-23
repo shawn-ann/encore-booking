@@ -83,6 +83,11 @@ public class FuiouPayApiComponent {
     }
 
     public FuiouPayResponseBody pay(FuiouPayRequestBody requestBody) throws Exception {
+        if (myAppConfig.isMockPay()) {
+            FuiouPayResponseBody fuiouPayResponseBody = new FuiouPayResponseBody();
+            fuiouPayResponseBody.setOrder_info("{\"appId\":\"wxe2ae77d499999988\",\"timeStamp\":\"1668466735\",\"signType\":\"RSA\",\"package\":\"prepay_id=wx150658551548026d616f3977fc8e8e0000\",\"nonceStr\":\"40470c46c9fd42da9235ca3c3fd8dff5\",\"paySign\":\"an5et+twzDnueKq9hQucwf47lMxN4Ui1ZjTOCyrw/5JkIFKlWXFVZqEk9nGM1skIAiCFFISE/g5Zex0eu2Q7zA6vflKKxkMOSL25SwXtzAY+Qh/WHx6OiEQG6ZPkeyPYHVQLP0Vg+ckgbPRc2Oy9SA/FbdT98jxhV2AqY+pcAfkMsGpmzltb9Eqy9fP5tWbsNPMEHOwx1Hy861ZK9KfOkkUOKmGjYnglGiE4pPFrhPziehQsYMwL40bh1bMyCUxhQn32wUsczZXqzCB3/NjHQAeztRLCt2Ok0nGkkoA5kHFnfh77iIlrgupGIPyt/ieu2sKuKL/gml46JQzuMAhGRQ==\"}");
+            return fuiouPayResponseBody;
+        }
         Map<String, Object> param = new HashMap<>();
         param.put("mchnt_cd", myAppConfig.getFuiouMchntCd());
         param.put("order_date", requestBody.getOrder_date());
@@ -105,6 +110,12 @@ public class FuiouPayApiComponent {
     }
 
     public FuiouRefundResponseBody refund(FuiouRefundRequestBody requestBody) throws Exception {
+        if (myAppConfig.isMockPay()) {
+            FuiouRefundResponseBody fuiouRefundResponseBody = new FuiouRefundResponseBody();
+            fuiouRefundResponseBody.setRefund_st("1");
+            fuiouRefundResponseBody.setRefund_fas_ssn("1111111");
+            return fuiouRefundResponseBody;
+        }
         Map<String, Object> param = new HashMap<>();
         param.put("mchnt_cd", myAppConfig.getFuiouMchntCd());
         param.put("refund_order_date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));

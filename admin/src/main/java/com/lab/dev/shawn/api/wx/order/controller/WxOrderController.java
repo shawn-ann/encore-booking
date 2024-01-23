@@ -63,6 +63,16 @@ public class WxOrderController {
         return ResponseEntity.ok(body);
     }
 
+    @PostMapping("/refund/{id}")
+    public ResponseEntity<ApiResponseBody> refund(@PathVariable Long id, HttpServletRequest request) throws Exception {
+
+        String token = request.getHeader("X-Token");
+        Long agentId = JwtUtil.getTokenClaims(token).get("id", Long.class);
+
+        wxOrderService.refund(id, agentId);
+        ApiResponseBody body = new ApiResponseBody("success");
+        return ResponseEntity.ok(body);
+    }
     @GetMapping("/list")
     public ResponseEntity<ApiResponseBody> list(HttpServletRequest request) throws BaseException {
 

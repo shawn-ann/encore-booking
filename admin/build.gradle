@@ -41,10 +41,7 @@ dependencies {
     implementation group: 'com.aliyun', name: 'tea-console', version: '0.0.1'
     implementation group: 'com.aliyun', name: 'tea', version: '1.2.8'
     implementation group: 'com.aliyun', name: 'tea-util', version: '0.2.21'
-
-
-
-
+    implementation group: 'com.aliyun', name: 'aliyun-java-sdk-core', version: '4.6.4'
 
 
 
@@ -52,4 +49,7 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+bootJar {
+    duplicatesStrategy = 'EXCLUDE' // 设置重复文件处理策略，这里使用 "EXCLUDE" 策略
 }

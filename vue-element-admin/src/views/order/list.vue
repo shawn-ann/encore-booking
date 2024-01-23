@@ -79,6 +79,11 @@
                       label="状态"
                       width="180"
                     />
+                    <el-table-column
+                      prop="note"
+                      label="状态"
+                      width="180"
+                    />
                   </el-table>
                 </template>
               </el-form-item>

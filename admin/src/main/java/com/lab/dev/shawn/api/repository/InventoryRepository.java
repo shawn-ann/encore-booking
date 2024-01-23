@@ -21,8 +21,10 @@ public interface InventoryRepository extends CrudRepository<Inventory, Long> {
             new com.lab.dev.shawn.api.admin.inventory.vo.InventoryResponseVO(a.id,a.concert.name AS concertName,a.session.name sessionName,a.ticketCategory.name ticketCategoryName,a.totalQuantity,a.unallocatedQuantity,a.remainingQuantity,a.status) 
             FROM Inventory a
             WHERE a.deleted=false 
-            and (:concertId is null or a.concert.id = :concertId)
-            order by a.concert.name,a.session.name,a.ticketCategory.name
+            and a.session.deleted=false 
+            and a.ticketCategory.deleted=false 
+            and a.concert.id = :concertId
+            order by a.session.id,a.ticketCategory.id
             """)
     Page<InventoryResponseVO> findByFilter(Long concertId, Pageable pageable);
 

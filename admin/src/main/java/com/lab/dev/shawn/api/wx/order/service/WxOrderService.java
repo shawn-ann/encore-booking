@@ -8,9 +8,7 @@ import com.lab.dev.shawn.api.base.constant.OperationStatus;
 import com.lab.dev.shawn.api.base.constant.OrderStatus;
 import com.lab.dev.shawn.api.base.exception.BaseException;
 import com.lab.dev.shawn.api.component.FuiouPayApiComponent;
-import com.lab.dev.shawn.api.component.entity.FuiouPayNotifyRequestBody;
-import com.lab.dev.shawn.api.component.entity.FuiouPayRequestBody;
-import com.lab.dev.shawn.api.component.entity.FuiouPayResponseBody;
+import com.lab.dev.shawn.api.component.entity.*;
 import com.lab.dev.shawn.api.config.MyAppConfig;
 import com.lab.dev.shawn.api.entity.*;
 import com.lab.dev.shawn.api.repository.AgentRepository;
@@ -111,17 +109,15 @@ public class WxOrderService {
         response.setOrderNumber(order.getOrderNumber());
         response.setTotalFee(order.getTotalFee());
 
-        if (!myAppConfig.isMockPay()) {
-            FuiouPayRequestBody requestBody = new FuiouPayRequestBody();
-            String goodsName = order.getConcertName() + order.getSessionName() + order.getTicketCategoryName();
-            requestBody.setOrder_id(order.getOrderNumber());
-            requestBody.setOpenid(agent.getOpenId());
-            requestBody.setOrder_amt(order.getTotalFee());
-            requestBody.setGoods_name(goodsName);
-            requestBody.setGoods_detail(goodsName);
-            FuiouPayResponseBody fuiouPayResponseBody = fuiouPayApiComponent.pay(requestBody);
-            response.setPayInfo(fuiouPayResponseBody.getOrder_info());
-        }
+        FuiouPayRequestBody requestBody = new FuiouPayRequestBody();
+        String goodsName = order.getConcertName() + order.getSessionName() + order.getTicketCategoryName();
+        requestBody.setOrder_id(order.getOrderNumber());
+        requestBody.setOpenid(agent.getOpenId());
+        requestBody.setOrder_amt(order.getTotalFee());
+        requestBody.setGoods_name(goodsName);
+        requestBody.setGoods_detail(goodsName);
+        FuiouPayResponseBody fuiouPayResponseBody = fuiouPayApiComponent.pay(requestBody);
+        response.setPayInfo(fuiouPayResponseBody.getOrder_info());
         return response;
     }
 
@@ -178,7 +174,7 @@ public class WxOrderService {
         FuiouPayNotifyRequestBody body = fuiouPayApiComponent.parseNotifyMessage(requestBody);
 
         String orderNumber = body.getFy_order_id();
-        boolean paySuccess = body.getOrder_st().equals("1");
+        boolean paySuccess = "1".equals(body.getOrder_st());
         BookingOrder bookingOrder = bookingOrderRepository.findByOrderNumber(orderNumber);
         if (bookingOrder == null) {
             throw new BaseException(BaseExceptionEnum.ORDER_NOT_EXIST);
@@ -224,6 +220,56 @@ public class WxOrderService {
 
         order.getOperationList().add(operation);
         bookingOrderRepository.save(order);
+    }
+
+    public void refund(Long orderId, Long agentId) throws Exception {
+        BookingOrder order = bookingOrderRepository.findByID(orderId);
+        if (!order.getAgent().getId().equals(agentId)) {
+            throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
+        }
+        if (!order.getStatus().equals(OrderStatus.PAID)) {
+            throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
+        }
+
+        order.setStatus(OrderStatus.REFUNDING);
+        BookingOperation operation = new BookingOperation();
+        operation.setStatus(OperationStatus.APPLY_REFUND);
+        operation.setBookingOrder(order);
+        order.getOperationList().add(operation);
+        bookingOrderRepository.save(order);
+
+        boolean success = doFuiouRefund(order);
+        if (success) {
+            recoverStock(order);
+        }
+    }
+
+    private boolean doFuiouRefund(BookingOrder order) throws Exception {
+        boolean success = false;
+
+        FuiouRefundRequestBody requestBody = new FuiouRefundRequestBody();
+        requestBody.setRefund_order_id(order.getOrderNumber());
+        requestBody.setPay_order_id(order.getOrderNumber());
+        requestBody.setRefund_amt(order.getTotalFee());
+        BookingOperation payOperation = order.getOperationList().stream().filter(item -> OperationStatus.PAY_SUCCESS.equals(item.getStatus())).findFirst().get();
+        requestBody.setPay_order_date(payOperation.getCreateDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        FuiouRefundResponseBody refundResponseBody = fuiouPayApiComponent.refund(requestBody);
+
+        BookingOperation operation = new BookingOperation();
+        operation.setBookingOrder(order);
+        order.getOperationList().add(operation);
+        operation.setNote("退款富友流水号:" + refundResponseBody.getRefund_fas_ssn());
+        operation.setAdditionalInfo(new ObjectMapper().writer().writeValueAsString(refundResponseBody));
+        // 退款成功
+        if ("1".equals(refundResponseBody.getRefund_st())) {
+            order.setStatus(OrderStatus.REFUNDED);
+            operation.setStatus(OperationStatus.REFUND_SUCCESS);
+            success = true;
+        } else {
+            operation.setStatus(OperationStatus.REFUND_FAILED);
+        }
+        bookingOrderRepository.save(order);
+        return success;
     }
 
     private void recoverStock(BookingOrder order) throws BaseException {

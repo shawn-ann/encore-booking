@@ -44,13 +44,17 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="240">
+      <el-table-column align="center" label="操作" width="300">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">
             编辑
           </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row.id,$index)">
-            删除
+          <el-button type="primary" size="mini" icon="el-icon-edit">
+            <router-link :to="'/concert/inventory/'+scope.row.id">
+              库存管理
+            </router-link>
+          </el-button>
+          <el-button slot="reference" size="mini" type="danger" @click="handleDelete(scope.row.id,$index)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -241,7 +245,9 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
+      this.resetTemp()
+      this.temp = JSON.parse(JSON.stringify(row)) // copy obj
+
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -266,15 +272,23 @@ export default {
       })
     },
     handleDelete(id, index) {
-      deleteItem(id).then(() => {
-        this.handleFilter()
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
-        })
+      this.$alert('删除后对应的场次、票型及库存也会一并删除，确认继续么？', '提示', {
+        confirmButtonText: '确定',
+        callback: action => {
+          if (action !== 'confirm') {
+            return
+          }
+          deleteItem(id).then(() => {
+            this.handleFilter()
+            this.dialogFormVisible = false
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
       })
     },
     removeSession(item) {

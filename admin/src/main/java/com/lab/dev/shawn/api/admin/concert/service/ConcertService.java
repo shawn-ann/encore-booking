@@ -75,8 +75,28 @@ public class ConcertService {
             ticket.setDeleted(false);
             ticketCategoryList.add(ticket);
         });
-
+        initInventory(concert);
         concertRepository.save(concert);
+    }
+
+    private void initInventory(Concert concert) {
+        List<Inventory> inventoryList = new ArrayList<>();
+        List<Session> sessionList = concert.getSessionList();
+        List<TicketCategory> ticketCategoryList = concert.getTicketCategoryList();
+        sessionList.forEach(session -> {
+            ticketCategoryList.forEach(ticketCategory -> {
+                Inventory inventory = new Inventory();
+                inventory.setConcert(concert);
+                inventory.setSession(session);
+                inventory.setTicketCategory(ticketCategory);
+                inventory.setTotalQuantity(0);
+                inventory.setRemainingQuantity(0);
+                inventory.setUnallocatedQuantity(0);
+                inventory.setStatus(BaseStatus.ACTIVE);
+                inventoryList.add(inventory);
+            });
+        });
+        concert.setInventoryList(inventoryList);
     }
 
     public void update(ConcertRequestVO requestVO) throws BaseException {
@@ -100,9 +120,36 @@ public class ConcertService {
         List<TicketCategory> ticketCategoryList = getUpdatedTicketCategoryList(ticketCategoryListInDB, ticketCategoryVOList, concert);
         concert.setTicketCategoryList(ticketCategoryList);
 
+        updateInventory(concert);
+
         concertRepository.save(concert);
     }
 
+    private void updateInventory(Concert concert) {
+
+        List<Inventory> inventoryList = concert.getInventoryList();
+
+        List<Session> sessionList = concert.getSessionList();
+        List<TicketCategory> ticketCategoryList = concert.getTicketCategoryList();
+        sessionList.forEach(session -> {
+            ticketCategoryList.forEach(ticketCategory -> {
+                long countInDB = inventoryList.stream().filter(item -> item.getSession().getId() == session.getId() && item.getTicketCategory().getId() == ticketCategory.getId()).count();
+                if (countInDB == 0) {
+                    Inventory inventory = new Inventory();
+                    inventory.setConcert(concert);
+                    inventory.setSession(session);
+                    inventory.setTicketCategory(ticketCategory);
+                    inventory.setTotalQuantity(0);
+                    inventory.setRemainingQuantity(0);
+                    inventory.setUnallocatedQuantity(0);
+                    inventory.setStatus(BaseStatus.ACTIVE);
+                    inventoryList.add(inventory);
+                }
+
+            });
+        });
+        concert.setInventoryList(inventoryList);
+    }
 
     private List<Session> getUpdatedSessionList(List<Session> sessionListInDB, List<SessionRequestVO> sessionVOList, Concert concert) throws BaseException {
         List<Session> results = new ArrayList<>();
@@ -112,6 +159,7 @@ public class ConcertService {
             if (filteredVoItem == null) {
                 // Delete
                 dbItem.setDeleted(true);
+                concert.getInventoryList().stream().filter(temp -> dbItem.getId().equals(temp.getSession().getId())).forEach(temp -> temp.setDeleted(true));
                 deletedSessionIds.add(dbItem.getId());
             } else if (Long.valueOf(filteredVoItem.getId()).equals(dbItem)) {
                 // Update
@@ -119,13 +167,13 @@ public class ConcertService {
             }
             results.add(dbItem);
         });
-        if (!deletedSessionIds.isEmpty()) {
-            List<Inventory> inventories = inventoryRepository.findByTicketCategoryIds(deletedSessionIds);
-            if (!inventories.isEmpty()) {
-                String collectedTicketCategoryNames = inventories.stream().map(item -> item.getTicketCategory().getName()).collect(Collectors.joining(","));
-                throw new BaseException(50008, "请先删除场次[" + collectedTicketCategoryNames + "]对应的库存再删除该记录");
-            }
-        }
+//        if (!deletedSessionIds.isEmpty()) {
+//            List<Inventory> inventories = inventoryRepository.findByTicketCategoryIds(deletedSessionIds);
+//            if (!inventories.isEmpty()) {
+//                String collectedTicketCategoryNames = inventories.stream().map(item -> item.getTicketCategory().getName()).collect(Collectors.joining(","));
+//                throw new BaseException(50008, "请先删除场次[" + collectedTicketCategoryNames + "]对应的库存再删除该记录");
+//            }
+//        }
         List<SessionRequestVO> needAddVOs = findSourceItemsNotInTargetList(sessionVOList, sessionListInDB, (SessionRequestVO voItem, Session dbItem) -> StringUtils.isNotBlank(voItem.getId()) && Long.valueOf(voItem.getId()).equals(dbItem.getId()));
         needAddVOs.forEach(voItems -> {
             Session session = new Session();
@@ -145,6 +193,7 @@ public class ConcertService {
             if (filteredVoItem == null) {
                 // Delete
                 dbItem.setDeleted(true);
+                concert.getInventoryList().stream().filter(temp -> dbItem.getId().equals(temp.getTicketCategory().getId())).forEach(temp -> temp.setDeleted(true));
                 deletedCategoryIds.add(dbItem.getId());
             } else if (Long.valueOf(filteredVoItem.getId()).equals(dbItem)) {
                 // Update
@@ -152,13 +201,13 @@ public class ConcertService {
             }
             results.add(dbItem);
         });
-        if (!deletedCategoryIds.isEmpty()) {
-            List<Inventory> inventories = inventoryRepository.findByTicketCategoryIds(deletedCategoryIds);
-            if (!inventories.isEmpty()) {
-                String collectedTicketCategoryNames = inventories.stream().map(item -> item.getTicketCategory().getName()).collect(Collectors.joining(","));
-                throw new BaseException(50008, "请先删除票档[" + collectedTicketCategoryNames + "]对应的库存再删除该记录");
-            }
-        }
+//        if (!deletedCategoryIds.isEmpty()) {
+//            List<Inventory> inventories = inventoryRepository.findByTicketCategoryIds(deletedCategoryIds);
+//            if (!inventories.isEmpty()) {
+//                String collectedTicketCategoryNames = inventories.stream().map(item -> item.getTicketCategory().getName()).collect(Collectors.joining(","));
+//                throw new BaseException(50008, "请先删除票档[" + collectedTicketCategoryNames + "]对应的库存再删除该记录");
+//            }
+//        }
 
         List<ConcertRequestVO.TicketCategoryRequestVO> needAddVOs = findSourceItemsNotInTargetList(ticketCategoryVOList, ticketCategoryListInDB, (ConcertRequestVO.TicketCategoryRequestVO voItem, TicketCategory dbItem) -> StringUtils.isNotBlank(voItem.getId()) && Long.valueOf(voItem.getId()).equals(dbItem.getId()));
         needAddVOs.forEach(voItems -> {
@@ -176,18 +225,17 @@ public class ConcertService {
     }
 
     public void delete(Long id) throws BaseException {
-        Concert entity = concertRepository.findById(id).get();
-        if (entity == null) {
+        Concert concert = concertRepository.findById(id).get();
+        if (concert == null) {
             throw new BaseException(BaseExceptionEnum.NOT_FOUND_MATCH_RECORD);
         }
 
-        List<Inventory> list = inventoryRepository.findByConcertId(entity.getId());
-        if (!list.isEmpty()) {
-            throw new BaseException(50008, "请先删除该演唱会对应的库存再删除该记录");
-        }
+        concert.getInventoryList().forEach(item -> item.setDeleted(true));
+        concert.getSessionList().forEach(item -> item.setDeleted(true));
+        concert.getTicketCategoryList().forEach(item -> item.setDeleted(true));
 
-        entity.setDeleted(true);
-        concertRepository.save(entity);
+        concert.setDeleted(true);
+        concertRepository.save(concert);
     }
 
     public List<DropdownOptions> findDropdownOptions() {

@@ -84,9 +84,9 @@ public class InventoryService {
         Long id = requestVO.getId();
 
         Inventory entity = inventoryRepository.findById(id).get();
-        if (entity.getStatus().equals(BaseStatus.ACTIVE)) {
-            throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
-        }
+//        if (entity.getStatus().equals(BaseStatus.ACTIVE)) {
+//            throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
+//        }
         int quantity = Integer.valueOf(requestVO.getQuantity());
         if ("MINUS".equals(requestVO.getOperation())) {
             quantity = -quantity;
