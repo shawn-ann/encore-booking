@@ -41,6 +41,9 @@ public class BookingOrder extends BaseEntity {
     private String sessionName;
     private String ticketCategoryName;
     private int totalFee;
+    private String fuiouRefundSsn;
+    private String fuiouOrderId;
+    private String fuiouPaySsn;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;

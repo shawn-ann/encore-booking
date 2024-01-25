@@ -56,7 +56,12 @@ public class WxOrderController {
                 body.append(line);
             }
             // 处理请求体数据
-            wxOrderService.payNotify(body.toString());
+            try {
+                wxOrderService.payNotify(body.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
         }
 
         ApiResponseBody body = new ApiResponseBody(null);
@@ -73,6 +78,7 @@ public class WxOrderController {
         ApiResponseBody body = new ApiResponseBody("success");
         return ResponseEntity.ok(body);
     }
+
     @GetMapping("/list")
     public ResponseEntity<ApiResponseBody> list(HttpServletRequest request) throws BaseException {
 

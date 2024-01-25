@@ -1,6 +1,5 @@
 package com.lab.dev.shawn.api.wx.order.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lab.dev.shawn.api.base.constant.BaseExceptionEnum;
 import com.lab.dev.shawn.api.base.constant.BaseStatus;
@@ -58,16 +57,6 @@ public class WxOrderService {
         Agent agent = agentRepository.findById(agentTicketQuota.getAgent().getId()).get();
         if (agent == null || agent.isDeleted() == true || agent.getStatus().equals(BaseStatus.INACTIVE)) {
             throw new BaseException(BaseExceptionEnum.CURRENT_USER_CAN_NOT_CREAT_ORDER);
-        }
-
-        // 扣除配额表的库存和库存表的库存
-        int affectCounts = agentTicketQuotaRepository.addRemainingQuantity(agentTicketQuota.getId(), -buyerCount);
-        if (affectCounts != 1) {
-            throw new BaseException(BaseExceptionEnum.OPERATION_FAILED);
-        }
-        affectCounts = inventoryRepository.addRemainingQuantity(agentTicketQuota.getInventory().getId(), -buyerCount);
-        if (affectCounts != 1) {
-            throw new BaseException(BaseExceptionEnum.OPERATION_FAILED);
         }
 
         //创建订单信息
@@ -170,7 +159,7 @@ public class WxOrderService {
         return convertBookingOrderToMap(bookingOrder);
     }
 
-    public void payNotify(String requestBody) throws BaseException, JsonProcessingException {
+    public void payNotify(String requestBody) throws Exception {
         FuiouPayNotifyRequestBody body = fuiouPayApiComponent.parseNotifyMessage(requestBody);
 
         String orderNumber = body.getFy_order_id();
@@ -186,13 +175,24 @@ public class WxOrderService {
 
         BookingOperation operation = new BookingOperation();
         operation.setBookingOrder(bookingOrder);
-        operation.setNote("富友订单号:" + body.getFy_order_id() + ",富友流水号:" + body.getOrder_fas_ssn());
+        operation.setCreateDate(LocalDateTime.now());
         operation.setAdditionalInfo(new ObjectMapper().writer().writeValueAsString(body));
         if (paySuccess) {
             bookingOrder.setStatus(OrderStatus.PAID);
+            bookingOrder.setFuiouOrderId(body.getFy_order_id());
+            bookingOrder.setFuiouPaySsn(body.getOrder_fas_ssn());
             operation.setStatus(OperationStatus.PAY_SUCCESS);
+            try {
+                reduceStock(bookingOrder);
+            } catch (Exception e) {
+                bookingOrder.setStatus(OrderStatus.REFUNDING);
+                System.out.println("订单号【" + bookingOrder.getOrderNumber() + "】支付成功扣库存失败，自动申请退款！");
+                boolean success = doFuiouRefund(bookingOrder, "订单支付成功但库存不足，系统自动退款");
+                if (success) {
+                    bookingOrder.setStatus(OrderStatus.REFUNDED);
+                }
+            }
         } else {
-            // TODO 支付失败
             operation.setStatus(OperationStatus.PAY_FAILED);
         }
 
@@ -200,6 +200,20 @@ public class WxOrderService {
         operationList.add(operation);
 
         bookingOrderRepository.save(bookingOrder);
+    }
+
+    private void reduceStock(BookingOrder bookingOrder) throws BaseException {
+        AgentTicketQuota agentTicketQuota = bookingOrder.getAgentTicketQuota();
+        int buyerCount = bookingOrder.getBuyCount();
+        // 扣除配额表的库存和库存表的库存
+        int affectCounts = agentTicketQuotaRepository.addRemainingQuantity(agentTicketQuota.getId(), -buyerCount);
+        if (affectCounts != 1) {
+            throw new BaseException(BaseExceptionEnum.OPERATION_FAILED);
+        }
+        affectCounts = inventoryRepository.addRemainingQuantity(agentTicketQuota.getInventory().getId(), -buyerCount);
+        if (affectCounts != 1) {
+            throw new BaseException(BaseExceptionEnum.OPERATION_FAILED);
+        }
     }
 
     public void cancel(Long orderId, Long agentId) throws BaseException {
@@ -210,8 +224,6 @@ public class WxOrderService {
         if (!order.getStatus().equals(OrderStatus.CREATED)) {
             throw new BaseException(BaseExceptionEnum.NOT_ALLOWED_OPERATION);
         }
-
-        recoverStock(order);
 
         order.setStatus(OrderStatus.CANCEL);
         BookingOperation operation = new BookingOperation();
@@ -234,18 +246,20 @@ public class WxOrderService {
         order.setStatus(OrderStatus.REFUNDING);
         BookingOperation operation = new BookingOperation();
         operation.setStatus(OperationStatus.APPLY_REFUND);
+        operation.setCreateDate(LocalDateTime.now());
         operation.setBookingOrder(order);
         order.getOperationList().add(operation);
-        bookingOrderRepository.save(order);
 
-        boolean success = doFuiouRefund(order);
+        boolean success = doFuiouRefund(order, "");
         if (success) {
+            order.setStatus(OrderStatus.REFUNDED);
             recoverStock(order);
         }
+
+        bookingOrderRepository.save(order);
     }
 
-    private boolean doFuiouRefund(BookingOrder order) throws Exception {
-        boolean success = false;
+    private boolean doFuiouRefund(BookingOrder order, String note) throws Exception {
 
         FuiouRefundRequestBody requestBody = new FuiouRefundRequestBody();
         requestBody.setRefund_order_id(order.getOrderNumber());
@@ -255,20 +269,15 @@ public class WxOrderService {
         requestBody.setPay_order_date(payOperation.getCreateDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
         FuiouRefundResponseBody refundResponseBody = fuiouPayApiComponent.refund(requestBody);
 
+        boolean success = "1".equals(refundResponseBody.getRefund_st());
+
         BookingOperation operation = new BookingOperation();
         operation.setBookingOrder(order);
-        order.getOperationList().add(operation);
-        operation.setNote("退款富友流水号:" + refundResponseBody.getRefund_fas_ssn());
+        operation.setCreateDate(LocalDateTime.now());
+        operation.setNote(note);
         operation.setAdditionalInfo(new ObjectMapper().writer().writeValueAsString(refundResponseBody));
-        // 退款成功
-        if ("1".equals(refundResponseBody.getRefund_st())) {
-            order.setStatus(OrderStatus.REFUNDED);
-            operation.setStatus(OperationStatus.REFUND_SUCCESS);
-            success = true;
-        } else {
-            operation.setStatus(OperationStatus.REFUND_FAILED);
-        }
-        bookingOrderRepository.save(order);
+        operation.setStatus(success ? OperationStatus.REFUND_SUCCESS : OperationStatus.REFUND_FAILED);
+        order.getOperationList().add(operation);
         return success;
     }
 
